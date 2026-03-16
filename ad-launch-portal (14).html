@@ -1,0 +1,2278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ad Launch Center — AIFintech Marketing Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Outfit',sans-serif;background:#f5f7fb;display:flex;height:100vh;overflow:hidden;}
+  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:4px}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes pop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+  .nav-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:#374151;transition:background .12s;margin-bottom:1px;}
+  .nav-item:hover{background:#f0f4ff;}
+  .nav-item.active{background:#eff6ff;color:#2563eb;font-weight:600;}
+  .nav-child{padding-left:32px;font-size:12.5px;color:#6b7280;}
+  .nav-child.active{color:#2563eb;font-weight:600;background:#eff6ff;}
+  .camp-card{border:2px solid #e8ecf0;border-radius:14px;padding:18px 20px;margin-bottom:12px;background:#fafafa;cursor:pointer;transition:all .15s;}
+  .camp-card:hover{border-color:#3b82f6;background:#f0f6ff;}
+  .camp-card.selected{border-color:#3b82f6;background:#f0f6ff;}
+  .plat-card{border:2px solid #e8ecf0;border-radius:16px;padding:28px 20px;text-align:center;background:#fafafa;cursor:pointer;transition:all .18s;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+  .plat-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.10);}
+  .btn-next{padding:10px 28px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;font-family:'Outfit',sans-serif;}
+  .btn-next:hover:not(:disabled){background:#1d4ed8!important;transform:translateY(-1px);}
+  .btn-next:disabled{background:#e2e8f0!important;color:#94a3b8!important;cursor:not-allowed;}
+  .btn-back{padding:10px 22px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;background:#fff;color:#374151;transition:all .15s;font-family:'Outfit',sans-serif;}
+  .btn-back:hover:not(:disabled){background:#f3f4f6;}
+  .btn-back:disabled{color:#cbd5e1;cursor:not-allowed;}
+  input,select{font-family:'Outfit',sans-serif;transition:border .15s,box-shadow .15s;}
+  input:focus,select:focus{outline:none;border-color:#3b82f6!important;box-shadow:0 0 0 3px rgba(59,130,246,.12)!important;}
+  .step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;transition:all .2s;flex-shrink:0;}
+  .step-line{width:16px;height:2px;border-radius:2px;margin:0 4px;}
+  .card{background:#fff;border-radius:18px;padding:28px 30px;box-shadow:0 1px 12px rgba(0,0,0,.06);animation:fadeUp .35s ease both;}
+  .panel{background:#fff;border-radius:16px;padding:20px;box-shadow:0 1px 12px rgba(0,0,0,.06);}
+  .badge-new{font-size:9px;background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:1px 5px;font-weight:700;}
+  label{font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:6px;}
+  .field-input{width:100%;padding:11px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;color:#0f172a;background:#fafafa;}
+  .field-input.prefix{padding-left:26px;}
+  .prefix-wrap{position:relative;}
+  .prefix-sym{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none;}
+  #sidebar{width:220px;background:#fff;border-right:1px solid #e8ecf0;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+  #main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  #topbar{background:#fff;border-bottom:1px solid #e8ecf0;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  #content{flex:1;overflow-y:auto;padding:28px 32px;}
+  .grid2{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}
+  .grid2.full{grid-template-columns:1fr;}
+  .grid2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .budget-bar{background:#e2e8f0;border-radius:100px;overflow:hidden;}
+  .spin-el{width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:inline-block;}
+  .section-label{font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div style="padding:20px 18px 16px;border-bottom:1px solid #f0f2f5;">
+    <div style="display:flex;align-items:center;gap:9px;">
+      <div style="width:32px;height:32px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">💹</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#111;line-height:1.2;">AIFintech</div>
+        <div style="font-size:10px;color:#9ca3af;font-weight:500;">Marketing Portal</div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:6px 10px 2px;">
+    <div class="nav-item"><span>☑️</span> My Tasks <span style="margin-left:auto;font-size:11px;color:#9ca3af;">▾</span></div>
+  </div>
+  <div style="padding:4px 10px;flex:1;" id="navMenu"></div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:12px;color:#9ca3af;">Ad Center</span>
+      <span style="font-size:12px;color:#d1d5db;">›</span>
+      <span id="breadcrumb" style="font-size:13px;font-weight:600;color:#111;">🚀 Launch Ads</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="width:32px;height:32px;background:#f3f4f6;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;">🔔</div>
+      <div style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <div style="width:32px;height:32px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;">投</div>
+        <span style="font-size:13px;font-weight:500;color:#374151;">投手A</span>
+        <span style="font-size:10px;color:#9ca3af;">▾</span>
+      </div>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+<script>
+// ─── Data ─────────────────────────────────────────────────────────────────────
+// remaining = budget - adSpent  (no influencer cost involved)
+const CAMPAIGNS_INIT = [
+  { id:"C-2024-001", name:"Q1 Latam Growth Campaign", budget:50000, adSpent:14400, influencers:8,  region:"Latam"  },
+  { id:"C-2024-002", name:"Brazil Market Expansion",  budget:80000, adSpent:9200,  influencers:12, region:"Brazil" },
+  { id:"C-2024-003", name:"ES Spring Promo",          budget:30000, adSpent:6700,  influencers:5,  region:"Latam"  },
+];
+// ─── Ads Performance Data ────────────────────────────────────────────────────
+const ADS_MANAGERS = [
+  { id:"am1", name:"Alex Chen",   totalBudget:120000, spent:98500,
+    metrics:{ impressions:2500000, clicks:128000, leads:3200, ev:156000, firstDeposit:890, depositAmount:445000 } },
+  { id:"am2", name:"Jordan Lee",  totalBudget:95000,  spent:92000,
+    metrics:{ impressions:1980000, clicks:104000, leads:2700, ev:128000, firstDeposit:740, depositAmount:368000 } },
+  { id:"am3", name:"Sam Wilson",  totalBudget:80000,  spent:61200,
+    metrics:{ impressions:1420000, clicks:87500,  leads:2100, ev:97000,  firstDeposit:580, depositAmount:292000 } },
+  { id:"am4", name:"Taylor Kim",  totalBudget:65000,  spent:65000,
+    metrics:{ impressions:1650000, clicks:71000,  leads:1800, ev:84000,  firstDeposit:490, depositAmount:248000 } },
+  { id:"am5", name:"Morgan Zhang",totalBudget:50000,  spent:38500,
+    metrics:{ impressions:980000,  clicks:54000,  leads:1450, ev:71000,  firstDeposit:390, depositAmount:195000 } },
+];
+
+// ─── Channel Budget Data (Country → Channel → Campaign) ───────────────────────
+const COUNTRY_BUDGETS_INIT = [
+  {
+    id:"cty-au", country:"AU", region:"APAC", currency:"AUD", totalMonthlyBudget:180000,
+    channels:[
+      { id:"ch-au-meta",   name:"Meta Ads",     currency:"AUD", monthlyBudget:80000,  type:"programmatic", campaigns:["C-2024-001"] },
+      { id:"ch-au-google", name:"Google Ads",   currency:"AUD", monthlyBudget:60000,  type:"programmatic", campaigns:["C-2024-001"] },
+      { id:"ch-au-myfxb",  name:"MyFXBook",     currency:"AUD", monthlyBudget:25000,  type:"external",     campaigns:["C-2024-001"] },
+      { id:"ch-au-invest", name:"Investing.com",currency:"AUD", monthlyBudget:15000,  type:"external",     campaigns:["C-2024-001"] },
+    ]
+  },
+  {
+    id:"cty-br", country:"BR", region:"LATAM", currency:"USD", totalMonthlyBudget:120000,
+    channels:[
+      { id:"ch-br-meta",   name:"Meta Ads",     currency:"USD", monthlyBudget:55000,  type:"programmatic", campaigns:["C-2024-002"] },
+      { id:"ch-br-nelo",   name:"Nelogica",     currency:"USD", monthlyBudget:40000,  type:"external",     campaigns:["C-2024-002"] },
+      { id:"ch-br-google", name:"Google Ads",   currency:"USD", monthlyBudget:25000,  type:"programmatic", campaigns:["C-2024-002"] },
+    ]
+  },
+  {
+    id:"cty-es", country:"ES", region:"EMEA", currency:"EUR", totalMonthlyBudget:95000,
+    channels:[
+      { id:"ch-es-rankia", name:"Rankia",       currency:"EUR", monthlyBudget:20000,  type:"external",     campaigns:["C-2024-003"] },
+      { id:"ch-es-meta",   name:"Meta Ads",     currency:"EUR", monthlyBudget:45000,  type:"programmatic", campaigns:["C-2024-003"] },
+      { id:"ch-es-fxemp",  name:"FXEmpire",     currency:"EUR", monthlyBudget:30000,  type:"external",     campaigns:["C-2024-003"] },
+    ]
+  },
+  {
+    id:"cty-kr", country:"KR", region:"APAC", currency:"USD", totalMonthlyBudget:60000,
+    channels:[
+      { id:"ch-kr-meta",   name:"Meta Ads",     currency:"USD", monthlyBudget:35000,  type:"programmatic", campaigns:[] },
+      { id:"ch-kr-google", name:"Google Ads",   currency:"USD", monthlyBudget:25000,  type:"programmatic", campaigns:[] },
+    ]
+  },
+];
+
+const INVOICES_INIT = [
+  { id:"inv001", channelId:"ch-es-rankia", countryId:"cty-es", invoiceNo:"RNK-2024-031", date:"2024-03-31",
+    amount:18500, currency:"EUR", status:"Paid", paidDate:"2024-04-08", fileName:"Rankia_March_2024.pdf",
+    allocations:[{ campaignId:"C-2024-003", campaignName:"ES Spring Promo", amount:18500 }]
+  },
+  { id:"inv002", channelId:"ch-es-rankia", countryId:"cty-es", invoiceNo:"RNK-2024-028", date:"2024-02-29",
+    amount:19200, currency:"EUR", status:"Paid", paidDate:"2024-03-12", fileName:"Rankia_Feb_2024.pdf",
+    allocations:[{ campaignId:"C-2024-003", campaignName:"ES Spring Promo", amount:19200 }]
+  },
+  { id:"inv003", channelId:"ch-au-meta", countryId:"cty-au", invoiceNo:"META-AU-2024-031", date:"2024-03-31",
+    amount:82300, currency:"AUD", status:"Pending", paidDate:null, fileName:"Meta_AU_March_2024.pdf",
+    allocations:[{ campaignId:"C-2024-001", campaignName:"Q1 Latam Growth Campaign", amount:82300 }]
+  },
+  { id:"inv004", channelId:"ch-br-nelo", countryId:"cty-br", invoiceNo:"NELO-2024-031", date:"2024-03-31",
+    amount:38000, currency:"USD", status:"Pending", paidDate:null, fileName:"Nelogica_March_2024.pdf",
+    allocations:[{ campaignId:"C-2024-002", campaignName:"Brazil Market Expansion", amount:38000 }]
+  },
+];
+
+// ─── Digital Assets Data ──────────────────────────────────────────────────────
+const ASSETS_INIT = [
+  { id:"AST-001", name:"Zero_DepositBonus_1080x1080_EN", type:"Image", format:"JPG", size:"2.4 MB",
+    dimensions:"1080×1080", uploadedBy:"Amanda", uploadDate:"2024-03-15", lastUpdated:"2024-03-15",
+    campaign:"Q1 Latam Growth Campaign", mktType:"Promotion", funnel:"Conversion",
+    channels:["Meta Ads","Google Ads"], countries:["AU","NZ"], languages:["EN"],
+    entity:["Zero Pty Ltd"], complianceStatus:"Approved", approvedBy:"Sarah (Compliance)",
+    approvalDate:"2024-03-16", licenseType:["ASIC"], expiryDate:"2024-12-31",
+    restrictedRegions:["EEA","UK"], isActive:true, favorites:false,
+    thumbnail:"https://placehold.co/400x400/3b82f6/ffffff?text=1080x1080",
+    performance:{ impressions:1200000, ctr:"2.4%", cpc:"$0.82" } },
+  { id:"AST-002", name:"Zero_IBProgram_Banner_728x90_ES", type:"Image", format:"PNG", size:"890 KB",
+    dimensions:"728×90", uploadedBy:"Marcus", uploadDate:"2024-03-10", lastUpdated:"2024-03-18",
+    campaign:"Brazil Market Expansion", mktType:"IB Program", funnel:"Awareness",
+    channels:["Rankia","Investing.com"], countries:["BR","LATAM"], languages:["ES","PT"],
+    entity:["Zero FMA","Zero MU"], complianceStatus:"Approved", approvedBy:"Sarah (Compliance)",
+    approvalDate:"2024-03-11", licenseType:["FMA","FSC"], expiryDate:"2024-09-30",
+    restrictedRegions:["EEA"], isActive:true, favorites:true,
+    thumbnail:"https://placehold.co/728x90/7c3aed/ffffff?text=728x90+Banner",
+    performance:{ impressions:850000, ctr:"1.8%", cpc:"$1.10" } },
+  { id:"AST-003", name:"Zero_Branding_Video_15s_EN", type:"Video", format:"MP4", size:"18.2 MB",
+    dimensions:"1920×1080", uploadedBy:"Amanda", uploadDate:"2024-02-20", lastUpdated:"2024-02-20",
+    campaign:"Q1 Latam Growth Campaign", mktType:"Branding", funnel:"Awareness",
+    channels:["Meta Ads","TikTok"], countries:["AU","NZ","LATAM"], languages:["EN"],
+    entity:["Zero Pty Ltd"], complianceStatus:"Approved", approvedBy:"Sarah (Compliance)",
+    approvalDate:"2024-02-22", licenseType:["ASIC"], expiryDate:"2025-02-20",
+    restrictedRegions:["EEA","UK"], isActive:true, favorites:false,
+    thumbnail:"https://placehold.co/400x225/ef4444/ffffff?text=▶+Video+15s",
+    performance:{ impressions:2100000, ctr:"3.1%", cpc:"$0.64" } },
+  { id:"AST-004", name:"Zero_TradingGuide_PDF_EN", type:"PDF", format:"PDF", size:"4.1 MB",
+    dimensions:"A4", uploadedBy:"James", uploadDate:"2024-01-08", lastUpdated:"2024-02-14",
+    campaign:"ES Spring Promo", mktType:"Promotion", funnel:"Consideration",
+    channels:["Google Ads","Rankia"], countries:["AU","UK"], languages:["EN"],
+    entity:["Zero Pty Ltd","Zero LLC"], complianceStatus:"Pending", approvedBy:"",
+    approvalDate:"", licenseType:["ASIC","CySEC"], expiryDate:"2024-07-08",
+    restrictedRegions:[], isActive:false, favorites:false,
+    thumbnail:"https://placehold.co/400x300/f59e0b/ffffff?text=PDF+Guide",
+    performance:null },
+  { id:"AST-005", name:"Zero_DepositBonus_300x250_ES", type:"Image", format:"GIF", size:"1.2 MB",
+    dimensions:"300×250", uploadedBy:"Amanda", uploadDate:"2024-03-25", lastUpdated:"2024-03-25",
+    campaign:"Brazil Market Expansion", mktType:"Promotion", funnel:"Conversion",
+    channels:["Meta Ads"], countries:["BR","LATAM"], languages:["ES","PT"],
+    entity:["Zero FMA"], complianceStatus:"Draft", approvedBy:"",
+    approvalDate:"", licenseType:["FMA"], expiryDate:"2024-06-30",
+    restrictedRegions:["EEA"], isActive:false, favorites:true,
+    thumbnail:"https://placehold.co/300x250/22c55e/ffffff?text=GIF+300x250",
+    performance:null },
+  { id:"AST-006", name:"Zero_LandingPage_Deposit_KR", type:"Landing Page", format:"HTML", size:"320 KB",
+    dimensions:"Responsive", uploadedBy:"Marcus", uploadDate:"2024-03-01", lastUpdated:"2024-03-20",
+    campaign:"Q1 Latam Growth Campaign", mktType:"Promotion", funnel:"Conversion",
+    channels:["Google Ads","Meta Ads"], countries:["KR"], languages:["KR"],
+    entity:["Zero MU"], complianceStatus:"Rejected", approvedBy:"Sarah (Compliance)",
+    approvalDate:"2024-03-05", licenseType:["FSC"], expiryDate:"2024-08-01",
+    restrictedRegions:["EEA","UK"], isActive:false, favorites:false,
+    thumbnail:"https://placehold.co/400x300/64748b/ffffff?text=Landing+Page",
+    performance:null },
+];
+
+const ASSET_TYPES    = ["Image","Video","PDF","Landing Page","GIF","Ebook"];
+const MKT_TYPES      = ["Branding","Promotion","IB Program"];
+const FUNNEL_STAGES  = ["Awareness","Consideration","Conversion"];
+const ALL_CHANNELS   = ["Meta Ads","Google Ads","TikTok","Rankia","MyFXBook","Investing.com"];
+const ALL_COUNTRIES  = ["AU","NZ","BR","LATAM","KR","MN","UK","EU"];
+const ALL_LANGUAGES  = ["EN","ES","PT","KR","MN","AR"];
+const ALL_ENTITIES   = ["Zero FMA","Zero MU","Zero LLC","Zero Pty Ltd"];
+const COMPLIANCE_STATUSES = ["Draft","Pending","Approved","Rejected"];
+const LICENSE_TYPES  = ["FMA","FSC","CySEC","SVG","ASIC"];
+const RESTRICTED_REGIONS = ["EEA","UK","US","CN","JP"];
+const ROLES = { current: "Marketing" }; // Admin / Marketing / Compliance / Sales
+
+// ─── Influencer Payment Data ──────────────────────────────────────────────────
+const INFLUENCER_PAYMENTS_INIT = [
+  { id:"pmt-001", influencerId:"ES-IF-0034Y", influencerName:"Mariano Ezequiel Pascual",   region:"Latam",  campaign:"Q1 Latam Growth Campaign", dueDate:"2024-04-05", amount:1200,  currency:"USD", status:"Pending",   type:"Monthly Fee",    paymentAccount:"PayPal · mariano@..." },
+  { id:"pmt-002", influencerId:"ES-IF-0033Y", influencerName:"Jhonatan Parra Herrera",     region:"Latam",  campaign:"Q1 Latam Growth Campaign", dueDate:"2024-04-05", amount:950,   currency:"USD", status:"Pending",   type:"Monthly Fee",    paymentAccount:"Bank Transfer" },
+  { id:"pmt-003", influencerId:"ES-IF-0032X", influencerName:"Elsa Stella Prieto Rodriguez",region:"Latam", campaign:"Q1 Latam Growth Campaign", dueDate:"2024-04-10", amount:800,   currency:"USD", status:"Pending",   type:"Performance Bonus",paymentAccount:"PayPal · elsa@..." },
+  { id:"pmt-004", influencerId:"BR-IF-0062Y", influencerName:"Fernando Hayne Leal",        region:"Brazil", campaign:"Brazil Market Expansion",  dueDate:"2024-04-10", amount:2200,  currency:"USD", status:"Pending",   type:"Monthly Fee",    paymentAccount:"Bank Transfer · BR" },
+  { id:"pmt-005", influencerId:"BR-IF-0061Y", influencerName:"Jociney Medeiros Almeida",   region:"Brazil", campaign:"Brazil Market Expansion",  dueDate:"2024-04-15", amount:1800,  currency:"USD", status:"Pending",   type:"Monthly Fee",    paymentAccount:"Wise · jociney@..." },
+  { id:"pmt-006", influencerId:"ES-IF-0031Y", influencerName:"Javier Esteban González",    region:"Latam",  campaign:"ES Spring Promo",          dueDate:"2024-04-15", amount:1100,  currency:"EUR", status:"Pending",   type:"Monthly Fee",    paymentAccount:"PayPal · javier@..." },
+  { id:"pmt-007", influencerId:"ES-IF-0028Y", influencerName:"Gersson Eduardo Perez",      region:"Latam",  campaign:"ES Spring Promo",          dueDate:"2024-04-20", amount:750,   currency:"EUR", status:"Pending",   type:"Performance Bonus",paymentAccount:"Bank Transfer" },
+  { id:"pmt-008", influencerId:"BR-IF-0060Y", influencerName:"Denis Gabriel Klaus",        region:"Brazil", campaign:"Brazil Market Expansion",  dueDate:"2024-04-20", amount:1600,  currency:"USD", status:"Pending",   type:"Monthly Fee",    paymentAccount:"Wise · denis@..." },
+  { id:"pmt-009", influencerId:"ES-IF-0022Y", influencerName:"Fabricio Efrain Huaman",     region:"Latam",  campaign:"Q1 Latam Growth Campaign", dueDate:"2024-04-25", amount:900,   currency:"USD", status:"Pending",   type:"Monthly Fee",    paymentAccount:"PayPal · fabricio@..." },
+  { id:"pmt-010", influencerId:"ES-IF-0012Y", influencerName:"Gabriel David Parra Reyes",  region:"Latam",  campaign:"Q1 Latam Growth Campaign", dueDate:"2024-04-25", amount:1050,  currency:"USD", status:"Pending",   type:"Monthly Fee",    paymentAccount:"Bank Transfer" },
+  { id:"pmt-011", influencerId:"ES-IF-0034Y", influencerName:"Mariano Ezequiel Pascual",   region:"Latam",  campaign:"Q1 Latam Growth Campaign", dueDate:"2024-03-05", amount:1200,  currency:"USD", status:"Completed", type:"Monthly Fee",    paymentAccount:"PayPal · mariano@...", paidDate:"2024-03-05" },
+  { id:"pmt-012", influencerId:"BR-IF-0062Y", influencerName:"Fernando Hayne Leal",        region:"Brazil", campaign:"Brazil Market Expansion",  dueDate:"2024-03-10", amount:2200,  currency:"USD", status:"Completed", type:"Monthly Fee",    paymentAccount:"Bank Transfer · BR",  paidDate:"2024-03-10" },
+  { id:"pmt-013", influencerId:"ES-IF-0031Y", influencerName:"Javier Esteban González",    region:"Latam",  campaign:"ES Spring Promo",          dueDate:"2024-03-15", amount:1100,  currency:"EUR", status:"Completed", type:"Monthly Fee",    paymentAccount:"PayPal · javier@...",  paidDate:"2024-03-16" },
+  { id:"pmt-014", influencerId:"BR-IF-0060Y", influencerName:"Denis Gabriel Klaus",        region:"Brazil", campaign:"Brazil Market Expansion",  dueDate:"2024-04-28", amount:1600,  currency:"USD", status:"Pending",   type:"Performance Bonus",paymentAccount:"Wise · denis@..." },
+  { id:"pmt-015", influencerId:"ES-IF-0033Y", influencerName:"Jhonatan Parra Herrera",     region:"Latam",  campaign:"ES Spring Promo",          dueDate:"2024-04-30", amount:950,   currency:"USD", status:"Pending",   type:"Monthly Fee",    paymentAccount:"Bank Transfer" },
+];
+
+const PLATFORMS = [
+  { id:"meta",      name:"Meta Ads",      icon:"f",  color:"#1877F2", bg:"#e7f0fd", desc:"Facebook & Instagram", type:"programmatic" },
+  { id:"google",    name:"Google Ads",    icon:"G",  color:"#EA4335", bg:"#fdecea", desc:"Search & Display",     type:"programmatic" },
+  { id:"rankia",    name:"Rankia",        icon:"R",  color:"#e67e22", bg:"#fef3e2", desc:"Finance Media ES/LATAM",type:"external" },
+  { id:"fxempire",  name:"FXEmpire",      icon:"FX", color:"#16a085", bg:"#e8f8f5", desc:"Global FX Media",      type:"external" },
+  { id:"nelogica",  name:"Nelogica",      icon:"N",  color:"#8e44ad", bg:"#f5eef8", desc:"Brazil Trading Platform",type:"external" },
+  { id:"myfxbook",  name:"MyFXBook",      icon:"M",  color:"#2c3e50", bg:"#eaecee", desc:"FX Community & Tools", type:"external" },
+  { id:"investing", name:"Investing.com", icon:"I",  color:"#c0392b", bg:"#fdedec", desc:"Global Finance Media",  type:"external" },
+];
+const OBJECTIVES = ["Brand Awareness","Traffic","Lead Generation","Conversions"];
+const AUDIENCES  = ["Lookalike – Existing Customers","Interest – Finance & Investment","Retargeting – Website Visitors","Custom – Influencer Followers"];
+const STEPS = ["Campaign","Platform","Budget","Audience","Launch"];
+const NAV = [
+  { label:"Influencer Manage.", icon:"👤", children:["Influencers","Influencer Payments","Payment Calendar","Influencer Budget Ove...","Influencer Performanc..."] },
+  { label:"Campaign Manage.",   icon:"📢", children:["Campaigns","Campaign Payments","Campaign Budget Ov...","Campaign Performan..."] },
+  { label:"Ad Center", icon:"🚀", children:["Launch Ads","Ads Performance"], isNew:true },
+  { label:"Digital Assets",    icon:"🎨", children:["Asset Library","Upload Asset"], isNew:true },
+  { label:"Budget Control",     icon:"💰", children:["Channel Budget Management"] },
+  { label:"Payment Manageme...", icon:"💳", children:[] },
+  { label:"Tracking Link",      icon:"🔗", children:[] },
+  { label:"Task Management",    icon:"✅", children:[] },
+  { label:"Reporting",          icon:"📊", children:[] },
+];
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let S = {
+  influencerPayments: JSON.parse(JSON.stringify(INFLUENCER_PAYMENTS_INIT)),
+  cal: {
+    year: 2024,
+    month: 3,  // 0-indexed (3 = April)
+    selectedDate: null,
+    view: "month",  // month | list
+  },
+  countryBudgets: JSON.parse(JSON.stringify(COUNTRY_BUDGETS_INIT)),
+  invoices: JSON.parse(JSON.stringify(INVOICES_INIT)),
+  expandedNav: ["Influencer Manage.","Campaign Manage.","Ad Center","Budget Control"],
+  activeNav: "Launch Ads",
+  step: 0,
+  launched: false,
+  launchSnapshot: null,
+  form: { campaign:null, platform:null, dailyBudget:"", totalBudget:"", startDate:"", endDate:"", objective:"", audience:"", adName:"", utm:"" },
+  perf: { expandedId: "am1", rankBy: "depositAmount", period: "Last 30 days",
+           filterChannel: "All", filterCampaign: "All", filterCountry: "All" },
+  assets: JSON.parse(JSON.stringify(ASSETS_INIT)),
+  dam: {
+    view: "grid",
+    selectedAssetId: null,
+    showUpload: false,
+    filters: { type:"All", channel:"All", country:"All", language:"All", funnel:"All", compliance:"All", campaign:"All", activeOnly:false },
+    sort: "uploadDate",
+    searchQ: "",
+    newAsset: { name:"", type:"Image", campaign:"", mktType:"Promotion", funnel:"Awareness",
+                channels:[], countries:[], languages:[], entity:[], licenseType:[],
+                restrictedRegions:[], expiryDate:"", complianceStatus:"Draft", isActive:false },
+    tlModal: { show:false, landingUrl:"", source:"", country:"", term:"", generatedUrl:"" },
+  },
+  cbm: {
+    selectedCountryId: "cty-au",
+    selectedChannelId: null,
+    expandedInvoiceId: null,
+    showAddInvoice: false,
+    showAddChannel: false,
+    showAddCountry: false,
+    newInv: { invoiceNo:"", date:"", amount:"", currency:"", fileName:"", allocations:{} },
+    newChannel: { name:"", currency:"USD", monthlyBudget:"", type:"external", campaigns:[] },
+    newCountry: { country:"", currency:"USD", totalMonthlyBudget:"" },
+  },
+};
+
+// ─── Pure helpers ─────────────────────────────────────────────────────────────
+const fmt     = n  => "$" + Number(n||0).toLocaleString();
+const avail   = c  => c.budget - c.adSpent;          // ← simple: budget minus ad spend only
+const pctUsed = c  => Math.round(c.adSpent / c.budget * 100);
+const estDays = () => {
+  if (!S.form.startDate || !S.form.endDate) return 0;
+  return Math.max(1, Math.round((new Date(S.form.endDate) - new Date(S.form.startDate)) / 86400000));
+};
+const estTotal  = () => Number(S.form.dailyBudget || 0) * estDays();
+const isExtPlatform = () => PLATFORMS.find(p=>p.id===S.form.platform)?.type==="external";
+const liveC     = () => S.form.campaign ? S.campaigns.find(c => c.id === S.form.campaign.id) : null;
+const overBudget= () => { const lc = liveC(); return lc && estTotal() > 0 && estTotal() > avail(lc); };
+const canNext   = () => {
+  if (S.step===0) return !!S.form.campaign;
+  if (S.step===1) return !!S.form.platform;
+  if (S.step===2) return isExtPlatform() || (S.form.dailyBudget && S.form.startDate && S.form.endDate && !overBudget());
+  if (S.step===3) return S.form.objective && S.form.audience;
+  return true;
+};
+
+// ─── Nav ──────────────────────────────────────────────────────────────────────
+function renderNav() {
+  document.getElementById("navMenu").innerHTML = NAV.map(item => {
+    const open   = S.expandedNav.includes(item.label);
+    const active = S.activeNav === item.label;
+    return `<div>
+      <div class="nav-item${active?" active":""}" onclick="toggleNav('${item.label}')">
+        <span style="font-size:14px;">${item.icon}</span>
+        <span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.label}</span>
+        ${item.isNew ? '<span class="badge-new">NEW</span>' : ""}
+        ${item.children.length ? `<span style="font-size:10px;color:#9ca3af;">${open?"▾":"▸"}</span>` : ""}
+      </div>
+      ${open ? item.children.map(c => `<div class="nav-item nav-child${S.activeNav===c?" active":""}" onclick="setActive('${c}')">${c}</div>`).join("") : ""}
+    </div>`;
+  }).join("");
+}
+function toggleNav(label) {
+  const item = NAV.find(n=>n.label===label);
+  if (item?.children.length) {
+    const isExpanding = !S.expandedNav.includes(label);
+    S.expandedNav = isExpanding ? [...S.expandedNav, label] : S.expandedNav.filter(x=>x!==label);
+    if (isExpanding && item.children.length) S.activeNav = item.children[0];
+    else if (!isExpanding) S.activeNav = label;
+  } else {
+    S.activeNav = label;
+  }
+  renderNav();
+  rerender();
+}
+function setActive(label) { S.activeNav = label; rerender(); }
+
+// ─── Stepper ──────────────────────────────────────────────────────────────────
+function stepperHTML() {
+  return STEPS.map((s,i) => `
+    <div style="display:flex;align-items:center;gap:5px;">
+      <div class="step-dot" onclick="${i<S.step?`goStep(${i})`:""}"
+        style="background:${i<S.step?"#22c55e":i===S.step?"#2563eb":"#e2e8f0"};
+               color:${i<=S.step?"#fff":"#94a3b8"};
+               box-shadow:${i===S.step?"0 0 0 4px rgba(37,99,235,.18)":"none"};
+               cursor:${i<S.step?"pointer":"default"};">
+        ${i<S.step?"✓":i+1}
+      </div>
+      <span style="font-size:11px;color:${i===S.step?"#2563eb":i<S.step?"#22c55e":"#94a3b8"};font-weight:${i===S.step?700:400};">${s}</span>
+      ${i<STEPS.length-1?`<div class="step-line" style="background:${i<S.step?"#22c55e":"#e2e8f0"};"></div>`:""}
+    </div>`).join("");
+}
+
+// ─── Campaign cards ───────────────────────────────────────────────────────────
+function campaignCardsHTML() {
+  return S.campaigns.map(c => {
+    const av  = avail(c);
+    const pct = pctUsed(c);
+    const sel = S.form.campaign?.id === c.id;
+    const low = av < 3000;
+    return `
+    <div class="camp-card${sel?" selected":""}" onclick="selectCampaign('${c.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+            ${sel?'<span style="color:#2563eb;">●</span>':""}
+            <span style="font-weight:700;font-size:14px;color:#0f172a;">${c.name}</span>
+          </div>
+          <div style="display:flex;gap:10px;font-size:12px;color:#64748b;">
+            <span>📍 ${c.region}</span>
+            <span>👥 ${c.influencers} influencers</span>
+            <span style="background:#dcfce7;color:#166534;padding:1px 7px;border-radius:20px;font-weight:600;">Active</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:#94a3b8;margin-bottom:2px;">可用于投放</div>
+          <div style="font-size:22px;font-weight:800;color:${low?"#ef4444":"#0f172a"};">${fmt(av)}</div>
+          <div style="font-size:11px;color:#94a3b8;">of ${fmt(c.budget)}</div>
+        </div>
+      </div>
+      <!-- single-colour progress bar: ad spend only -->
+      <div class="budget-bar" style="height:8px;margin-bottom:8px;">
+        <div style="width:${pct}%;height:100%;background:${pct>85?"#ef4444":"#3b82f6"};border-radius:100px;transition:width .4s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b;">
+        <span><span style="display:inline-block;width:8px;height:8px;background:${pct>85?"#ef4444":"#3b82f6"};border-radius:2px;margin-right:4px;"></span>已投广告费 ${fmt(c.adSpent)}</span>
+        <span style="color:${low?"#ef4444":"#22c55e"};font-weight:600;">${pct}% used</span>
+      </div>
+      ${low?`<div style="margin-top:8px;font-size:12px;color:#ef4444;background:#fef2f2;border-radius:8px;padding:5px 10px;">⚠️ 剩余预算不足 $3,000，请谨慎设置广告预算</div>`:""}
+    </div>`;
+  }).join("");
+}
+
+// ─── Right panel ──────────────────────────────────────────────────────────────
+function rightPanelHTML() {
+  const lc = liveC();
+  const et = estTotal();
+  const hasPreview = S.form.dailyBudget && S.form.startDate && S.form.endDate;
+  return `<div style="display:flex;flex-direction:column;gap:14px;">
+
+    ${lc ? `<div class="panel">
+      <div class="section-label">Budget Overview</div>
+      <div style="font-size:12.5px;font-weight:600;color:#0f172a;margin-bottom:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${lc.name}</div>
+      <!-- stacked bar: adSpent (blue) + this launch preview (light blue) + remaining (grey) -->
+      <div class="budget-bar" style="height:10px;margin-bottom:10px;">
+        <div style="display:flex;height:100%;">
+          <div style="width:${lc.adSpent/lc.budget*100}%;background:#3b82f6;"></div>
+          ${hasPreview?`<div style="width:${Math.min(et/lc.budget*100, avail(lc)/lc.budget*100)}%;background:#93c5fd;opacity:.85;"></div>`:""}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        ${[
+          {color:"#3b82f6", label:"已投广告费",  value:fmt(lc.adSpent)},
+          ...(hasPreview?[{color:"#93c5fd",label:"本次预估",value:fmt(et),italic:true}]:[]),
+          {color:"#e2e8f0", label:"剩余可用",    value:fmt(avail(lc)-(hasPreview?Math.min(et,avail(lc)):0)), bold:true, border:true},
+        ].map(r=>`
+          <div style="display:flex;align-items:center;gap:7px;">
+            <div style="width:10px;height:10px;background:${r.color};border-radius:3px;${r.border?"border:1px solid #cbd5e1;":""}flex-shrink:0;"></div>
+            <span style="font-size:12px;color:#64748b;flex:1;font-style:${r.italic?"italic":"normal"};">${r.label}</span>
+            <span style="font-size:12px;font-weight:${r.bold?700:500};color:${r.bold?"#0f172a":"#64748b"};">${r.value}</span>
+          </div>`).join("")}
+      </div>
+    </div>` : ""}
+
+    <div class="panel">
+      <div class="section-label">Current Selection</div>
+      ${[
+        {icon:"📢",label:"Campaign",value:S.form.campaign?.name},
+        {icon:"📡",label:"Platform",value:PLATFORMS.find(p=>p.id===S.form.platform)?.name},
+        {icon:"💰",label:"预算",    value:S.form.dailyBudget?`${fmt(S.form.dailyBudget)}/天`:null},
+        {icon:"📅",label:"排期",    value:(S.form.startDate&&S.form.endDate)?`${S.form.startDate} → ${S.form.endDate}`:null},
+        {icon:"🎯",label:"目标",    value:S.form.objective},
+        {icon:"👥",label:"受众",    value:S.form.audience},
+      ].map(r=>`
+        <div style="display:flex;gap:8px;margin-bottom:9px;align-items:flex-start;">
+          <span style="font-size:13px;flex-shrink:0;margin-top:1px;">${r.icon}</span>
+          <div style="min-width:0;">
+            <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.06em;">${r.label}</div>
+            <div style="font-size:12.5px;color:${r.value?"#0f172a":"#cbd5e1"};font-weight:${r.value?500:400};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.value||"—"}</div>
+          </div>
+        </div>`).join("")}
+    </div>
+
+    <div style="background:linear-gradient(135deg,#1e3a8a,#3730a3);border-radius:16px;padding:18px 20px;color:#fff;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:6px;">💡 Tips</div>
+      <div style="font-size:12px;color:#bfdbfe;line-height:1.7;">
+        ${S.step===0?"选择预算充足的 Campaign，广告费用会从 Campaign 总预算中实时扣除。":""}
+        ${S.step===1?"Meta 适合品牌曝光和再营销，Google 适合捕捉主动搜索意图的用户。":""}
+        ${S.step===2?"日预算建议不超过剩余可用预算的 10%，便于持续优化调整。":""}
+        ${S.step===3?"Lookalike 受众通常比兴趣定向有更高转化率，建议优先测试。":""}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── Step content ─────────────────────────────────────────────────────────────
+function stepContentHTML() {
+  const lc   = liveC();
+  const et   = estTotal();
+  const ed   = estDays();
+  const over = overBudget();
+  const hasBudget = S.form.dailyBudget && S.form.startDate && S.form.endDate;
+
+  // STEP 0 ── Select Campaign
+  if (S.step===0) return `
+    <div style="margin-bottom:20px;">
+      <div style="font-size:17px;font-weight:700;color:#0f172a;">选择 Active Campaign</div>
+      <div style="font-size:13px;color:#64748b;margin-top:3px;">广告费用将从所选 Campaign 的总预算中扣除</div>
+    </div>
+    ${campaignCardsHTML()}`;
+
+  // STEP 1 ── Platform
+  if (S.step===1) {
+    const progPlatforms = PLATFORMS.filter(p=>p.type==="programmatic");
+    const extPlatforms  = PLATFORMS.filter(p=>p.type==="external");
+    const selPlat = PLATFORMS.find(p=>p.id===S.form.platform);
+    const isExt   = selPlat?.type==="external";
+    return `
+    <div style="margin-bottom:20px;">
+      <div style="font-size:17px;font-weight:700;color:#0f172a;">选择广告平台</div>
+      <div style="font-size:13px;color:#64748b;margin-top:3px;">选择投放渠道 — 外部媒体平台仅做关联记录，预算在 Budget Control 管理</div>
+    </div>
+
+    <!-- Programmatic -->
+    <div style="font-size:11px;font-weight:700;color:#2563eb;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+      <span style="background:#eff6ff;border-radius:5px;padding:2px 8px;">PROGRAMMATIC</span>
+      <span style="font-size:11px;color:#94a3b8;font-weight:400;">预算实时扣减，全流程追踪</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+      ${progPlatforms.map(p => {
+        const sel = S.form.platform===p.id;
+        return `<div class="plat-card" onclick="selectPlatform('${p.id}')"
+          style="border-color:${sel?p.color:"#e8ecf0"};background:${sel?p.bg:"#fafafa"};${sel?`box-shadow:0 4px 20px ${p.color}22;`:""}">
+          <div style="width:44px;height:44px;background:${p.color};border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:20px;color:#fff;font-weight:900;">${p.icon}</div>
+          <div style="font-weight:700;font-size:14px;color:${sel?p.color:"#0f172a"};">${p.name}</div>
+          <div style="font-size:12px;color:#64748b;margin-top:2px;">${p.desc}</div>
+          ${sel?`<div style="margin-top:8px;font-size:11px;color:${p.color};font-weight:700;background:${p.color}18;border-radius:20px;padding:3px 10px;display:inline-block;">✓ 已选择</div>`:""}
+        </div>`;
+      }).join("")}
+    </div>
+
+    <!-- External Media -->
+    <div style="font-size:11px;font-weight:700;color:#b45309;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+      <span style="background:#fef3e2;border-radius:5px;padding:2px 8px;">EXTERNAL MEDIA</span>
+      <span style="font-size:11px;color:#94a3b8;font-weight:400;">仅记录关联，Invoice 在 Budget Control 单独管理</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      ${extPlatforms.map(p => {
+        const sel = S.form.platform===p.id;
+        return `<div onclick="selectPlatform('${p.id}')"
+          style="padding:14px;border-radius:12px;border:2px solid ${sel?p.color:"#e8ecf0"};background:${sel?p.bg:"#fafafa"};cursor:pointer;text-align:center;transition:all .15s;"
+          onmouseover="this.style.borderColor='${p.color}'" onmouseout="this.style.borderColor='${sel?p.color:"#e8ecf0"}'">
+          <div style="width:36px;height:36px;background:${p.color};border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:14px;color:#fff;font-weight:900;">${p.icon}</div>
+          <div style="font-weight:700;font-size:13px;color:${sel?p.color:"#0f172a"};">${p.name}</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${p.desc}</div>
+          ${sel?`<div style="margin-top:6px;font-size:11px;color:${p.color};font-weight:700;">✓ 已选择</div>`:""}
+        </div>`;
+      }).join("")}
+    </div>
+
+    <!-- External notice -->
+    ${isExt ? `
+    <div style="margin-top:16px;background:#fffbeb;border:1px solid #fcd34d;border-radius:12px;padding:12px 16px;display:flex;gap:10px;align-items:flex-start;">
+      <span style="font-size:18px;">ℹ️</span>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#92400e;">外部媒体平台 — 仅关联记录</div>
+        <div style="font-size:12px;color:#78350f;margin-top:3px;line-height:1.6;">
+          选择 <b>${selPlat.name}</b> 后，系统将记录「<b>${S.form.campaign?.name||"此 Campaign"}</b> 在使用 ${selPlat.name}」的关联关系。<br>
+          实际预算和 Invoice 请前往 <b>Budget Control → Channel Budget Management</b> 管理。<br>
+          点击「下一步」将跳过预算填写，直接确认关联。
+        </div>
+      </div>
+    </div>` : ""}`;
+  }
+
+  // STEP 2 ── Budget & Schedule
+  if (S.step===2 && lc) return `
+    <div style="margin-bottom:20px;">
+      <div style="font-size:17px;font-weight:700;color:#0f172a;">广告预算 & 排期</div>
+      <div style="font-size:13px;color:#64748b;margin-top:3px;">广告费用从 Campaign 总预算实时扣除</div>
+    </div>
+
+    <!-- Budget snapshot -->
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;margin-bottom:22px;">
+      <div class="section-label">📊 ${lc.name} — 预算明细</div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid #f1f5f9;">
+        <span style="color:#64748b;">Campaign 总预算</span>
+        <span style="font-weight:800;color:#0f172a;">${fmt(lc.budget)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
+        <span style="color:#64748b;">已投放广告费</span>
+        <span style="font-weight:600;color:#3b82f6;">− ${fmt(lc.adSpent)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding-top:10px;border-top:2px solid #e2e8f0;margin-top:4px;">
+        <span style="font-size:14px;font-weight:700;color:#0f172a;">本次可用预算</span>
+        <span style="font-size:20px;font-weight:800;color:${avail(lc)<3000?"#ef4444":"#22c55e"};">${fmt(avail(lc))}</span>
+      </div>
+    </div>
+
+    <!-- Inputs -->
+    <div class="grid2col" style="margin-bottom:16px;">
+      <div>
+        <label>日预算 (USD) *</label>
+        <div class="prefix-wrap"><span class="prefix-sym">$</span>
+          <input class="field-input prefix" type="number" placeholder="e.g. 500" value="${S.form.dailyBudget}"
+            oninput="setField('dailyBudget',this.value);rerender();"/>
+        </div>
+      </div>
+      <div>
+        <label>总上限 (USD)</label>
+        <div class="prefix-wrap"><span class="prefix-sym">$</span>
+          <input class="field-input prefix" type="number" placeholder="选填" value="${S.form.totalBudget}"
+            oninput="setField('totalBudget',this.value);rerender();"/>
+        </div>
+      </div>
+      <div>
+        <label>开始日期 *</label>
+        <input class="field-input" type="date" value="${S.form.startDate}"
+          oninput="setField('startDate',this.value);rerender();"/>
+      </div>
+      <div>
+        <label>结束日期 *</label>
+        <input class="field-input" type="date" value="${S.form.endDate}"
+          oninput="setField('endDate',this.value);rerender();"/>
+      </div>
+    </div>
+
+    <!-- Real-time estimate -->
+    ${hasBudget ? `
+    <div style="border-radius:12px;padding:14px 18px;background:${over?"#fef2f2":"#f0fdf4"};border:1px solid ${over?"#fecaca":"#bbf7d0"};">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${over?6:0}px;">
+        <span style="font-size:13px;color:${over?"#dc2626":"#166534"};font-weight:500;">
+          ${over?"⚠️":"✅"} 预估总花费：<b>${fmt(et)}</b>（${ed} 天 × ${fmt(S.form.dailyBudget)}/天）
+        </span>
+        <span style="font-size:13px;font-weight:700;color:${over?"#dc2626":"#166534"};">
+          ${over?`超出 ${fmt(et-avail(lc))}`:`扣后剩 ${fmt(avail(lc)-et)}`}
+        </span>
+      </div>
+      ${over?`<div style="font-size:12px;color:#dc2626;">请降低日预算或缩短排期，当前可用 <b>${fmt(avail(lc))}</b></div>`:""}
+    </div>` : ""}`;
+
+  // STEP 3 ── Audience
+  if (S.step===3) return `
+    <div style="margin-bottom:20px;">
+      <div style="font-size:17px;font-weight:700;color:#0f172a;">受众 & 创意</div>
+      <div style="font-size:13px;color:#64748b;margin-top:3px;">配置投放目标和广告信息</div>
+    </div>
+    ${["objective","audience"].map((key,i)=>`
+      <div style="margin-bottom:16px;">
+        <label>${["投放目标 *","目标受众 *"][i]}</label>
+        <select class="field-input" onchange="setField('${key}',this.value);rerender();">
+          <option value="">请选择...</option>
+          ${(key==="objective"?OBJECTIVES:AUDIENCES).map(o=>`<option value="${o}"${S.form[key]===o?" selected":""}>${o}</option>`).join("")}
+        </select>
+      </div>`).join("")}
+    <div style="margin-bottom:16px;">
+      <label>广告名称</label>
+      <input class="field-input" type="text" placeholder="e.g. Latam_Q1_Conv_v1" value="${S.form.adName}"
+        oninput="setField('adName',this.value);"/>
+    </div>
+    <div style="margin-bottom:4px;">
+      <label>UTM 参数</label>
+      <input class="field-input" type="text" placeholder="utm_source=portal&utm_medium=paid" value="${S.form.utm}"
+        oninput="setField('utm',this.value);" style="font-family:monospace;font-size:12px;"/>
+      <div style="font-size:11px;color:#94a3b8;margin-top:5px;">留空将自动生成</div>
+    </div>`;
+
+  // STEP 4 ── Review & Launch
+  if (S.step===4 && lc) {
+    const afterRem = avail(lc) - et;
+    const plat     = PLATFORMS.find(p=>p.id===S.form.platform);
+    return `
+    <div style="margin-bottom:20px;">
+      <div style="font-size:17px;font-weight:700;color:#0f172a;">确认 & 投放</div>
+      <div style="font-size:13px;color:#64748b;margin-top:3px;">上线前请确认以下信息</div>
+    </div>
+
+    <!-- Budget impact box -->
+    <div style="background:#f0f6ff;border:1px solid #bfdbfe;border-radius:14px;padding:16px 20px;margin-bottom:20px;">
+      <div style="font-size:12px;font-weight:700;color:#1d4ed8;letter-spacing:.06em;margin-bottom:12px;">💰 本次投放预算影响</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+        <span style="color:#64748b;">Campaign 总预算</span>
+        <span style="font-weight:700;color:#0f172a;">${fmt(lc.budget)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding-bottom:10px;border-bottom:1px dashed #bfdbfe;margin-bottom:10px;">
+        <span style="color:#3b82f6;">已投放广告费</span>
+        <span style="font-weight:600;color:#3b82f6;">− ${fmt(lc.adSpent)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+        <span style="color:#1d4ed8;font-weight:600;">当前可用</span>
+        <span style="font-weight:700;color:#1d4ed8;">${fmt(avail(lc))}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding-bottom:10px;border-bottom:1px dashed #bfdbfe;margin-bottom:10px;">
+        <span style="color:#dc2626;font-weight:600;">本次扣除（预估）</span>
+        <span style="font-weight:700;color:#dc2626;">− ${fmt(et)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <span style="font-size:14px;font-weight:700;color:#0f172a;">投放后剩余</span>
+        <span style="font-size:20px;font-weight:800;color:${afterRem<2000?"#ef4444":"#22c55e"};">${fmt(afterRem)}</span>
+      </div>
+    </div>
+
+    <!-- Summary rows -->
+    ${[
+      ["Campaign", lc.name,                                           lc.id],
+      ["Platform", plat?.name],
+      ["日预算",   `${fmt(S.form.dailyBudget)} / day`],
+      ["排期",     `${S.form.startDate} → ${S.form.endDate}（${ed} 天）`],
+      ["目标",     S.form.objective],
+      ["受众",     S.form.audience],
+      ["广告名称", S.form.adName||"(自动生成)"],
+      ["UTM",      S.form.utm||"utm_source=portal&utm_medium=paid (auto)"],
+    ].map(([k,v,sub])=>`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f1f5f9;">
+        <span style="font-size:13px;color:#64748b;font-weight:500;min-width:80px;">${k}</span>
+        <div style="text-align:right;">
+          <div style="font-size:13px;font-weight:600;color:#0f172a;">${v||""}</div>
+          ${sub?`<div style="font-size:11px;color:#94a3b8;font-family:monospace;">${sub}</div>`:""}
+        </div>
+      </div>`).join("")}
+
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 16px;margin-top:16px;font-size:13px;color:#92400e;">
+      ⚠️ 提交后广告将进入 <b>${plat?.name}</b> 审核，审核通过后开始计费，费用从 Campaign 预算实时扣除。
+    </div>
+    <button id="launchBtn" onclick="doLaunch()"
+      style="width:100%;margin-top:20px;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(37,99,235,.35);font-family:'Outfit',sans-serif;transition:all .2s;">
+      🚀 确认投放
+    </button>`;
+  }
+  return "";
+}
+
+// ─── Success screen ───────────────────────────────────────────────────────────
+function successHTML() {
+  const snap     = S.launchSnapshot;
+  const after    = S.campaigns.find(c=>c.id===snap.campaignId);
+  const pct      = pctUsed(after);
+  const rem      = avail(after);
+  const plat     = PLATFORMS.find(p=>p.id===S.form.platform);
+  return `
+  <div style="animation:pop .5s cubic-bezier(.34,1.56,.64,1) both;background:#fff;border-radius:20px;padding:48px 40px;text-align:center;max-width:560px;margin:0 auto;box-shadow:0 4px 32px rgba(0,0,0,.08);">
+    <div style="font-size:64px;margin-bottom:12px;">🚀</div>
+    <div style="font-size:24px;font-weight:800;color:#0f172a;margin-bottom:6px;">广告已成功提交！</div>
+    <div style="color:#64748b;font-size:14px;margin-bottom:24px;">
+      <b style="color:#0f172a;">${snap.campaignName}</b> · <b style="color:${plat?.color};">${plat?.name}</b>
+    </div>
+
+    <!-- Post-launch budget -->
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:18px 22px;margin-bottom:24px;text-align:left;">
+      <div class="section-label">Campaign 预算更新</div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid #f1f5f9;">
+        <span style="color:#64748b;">Campaign 总预算</span>
+        <span style="font-weight:800;color:#0f172a;">${fmt(after.budget)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid #f1f5f9;">
+        <span style="color:#64748b;">本次广告投放</span>
+        <span style="font-weight:700;color:#2563eb;background:#eff6ff;padding:2px 8px;border-radius:6px;">− ${fmt(snap.spend)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
+        <span style="color:#64748b;">累计广告费（含本次）</span>
+        <span style="font-weight:600;color:#3b82f6;">− ${fmt(after.adSpent)}</span>
+      </div>
+      <!-- progress bar -->
+      <div class="budget-bar" style="height:8px;margin:14px 0 8px;">
+        <div style="width:${pct}%;height:100%;background:${pct>85?"#ef4444":"#3b82f6"};border-radius:100px;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <span style="font-size:12px;color:#94a3b8;">${pct}% 已使用</span>
+        <span style="font-size:13px;font-weight:700;color:${rem<2000?"#ef4444":"#22c55e"};">剩余 ${fmt(rem)}</span>
+      </div>
+    </div>
+
+    <button onclick="doReset()"
+      style="background:#2563eb;color:#fff;border:none;border-radius:12px;padding:13px 32px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">
+      + 继续投放
+    </button>
+  </div>`;
+}
+
+// ─── Ads Performance Page ────────────────────────────────────────────────────
+function fmtK(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + "M";
+  if (n >= 1000)    return (n/1000).toFixed(1)    + "K";
+  return String(n);
+}
+
+const RANK_OPTIONS = [
+  { key:"depositAmount",  label:"Deposit Amount" },
+  { key:"firstDeposit",   label:"First Deposit Users" },
+  { key:"ev",             label:"EV" },
+  { key:"leads",          label:"Leads" },
+  { key:"clicks",         label:"Clicks" },
+  { key:"impressions",    label:"Impressions" },
+];
+
+function adsPerformanceHTML() {
+  const { expandedId, rankBy, period, filterChannel, filterCampaign, filterCountry } = S.perf;
+  const periods = ["Last 7 days","Last 30 days","Last 90 days"];
+
+  const FILTER_OPTS = {
+    channel:  ["All", "Meta Ads", "Google Ads"],
+    campaign: ["All", "Q1 Latam Growth Campaign", "Brazil Market Expansion", "ES Spring Promo"],
+    country:  ["All", "Brazil", "Mexico", "Spain", "Argentina", "Colombia"],
+  };
+
+  const activeFilters = [
+    filterChannel  !== "All" ? {key:"filterChannel",  label:`Channel: ${filterChannel}`}  : null,
+    filterCampaign !== "All" ? {key:"filterCampaign", label:`Campaign: ${filterCampaign}`} : null,
+    filterCountry  !== "All" ? {key:"filterCountry",  label:`Country: ${filterCountry}`}   : null,
+  ].filter(Boolean);
+
+  const hasFilters = activeFilters.length > 0;
+
+  function filterDropdown(field, label, value, opts) {
+    const active = value !== "All";
+    return `
+    <div style="position:relative;display:inline-block;">
+      <select onchange="setPerfFilter('${field}',this.value)"
+        style="appearance:none;-webkit-appearance:none;padding:8px 32px 8px 12px;border-radius:9px;
+               border:1.5px solid ${active?"#3b82f6":"#e2e8f0"};
+               background:${active?"#eff6ff":"#fff"};
+               color:${active?"#2563eb":"#374151"};
+               font-size:12.5px;font-weight:${active?700:500};
+               cursor:pointer;font-family:'Outfit',sans-serif;
+               box-shadow:${active?"0 0 0 3px rgba(59,130,246,.12)":"none"};
+               transition:all .15s;min-width:130px;">
+        <option value="" disabled style="color:#94a3b8;">${label}</option>
+        ${opts.map(o=>`<option value="${o}"${value===o?" selected":""}>${o==="All"?"All "+label+"s":o}</option>`).join("")}
+      </select>
+      <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:10px;color:${active?"#2563eb":"#94a3b8"};">▾</span>
+      ${active?`<span onclick="setPerfFilter('${field}','All')" style="position:absolute;right:26px;top:50%;transform:translateY(-50%);font-size:11px;color:#94a3b8;cursor:pointer;padding:2px;">✕</span>`:""}
+    </div>`;
+  }
+
+  // Budget vs Spent section
+  function budgetRow(am) {
+    const pct     = Math.min(100, Math.round(am.spent / am.totalBudget * 100));
+    const over    = am.spent >= am.totalBudget;
+    const barColor = over ? "#ef4444" : "#3b82f6";
+    const isOpen  = expandedId === am.id;
+    const m       = am.metrics;
+    return `
+    <div style="border-bottom:1px solid #f1f5f9;">
+      <!-- Row -->
+      <div onclick="togglePerf('${am.id}')" style="display:grid;grid-template-columns:32px 1fr 120px 1fr 160px;align-items:center;padding:13px 20px;cursor:pointer;gap:12px;transition:background .12s;"
+        onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+        <span style="font-size:13px;color:#94a3b8;text-align:center;">${isOpen ? "−" : "+"}</span>
+        <span style="font-size:13.5px;font-weight:${isOpen?600:500};color:#0f172a;">${am.name}</span>
+        <span style="font-size:13px;color:#374151;text-align:right;">${fmt(am.totalBudget)}</span>
+        <!-- Progress bar -->
+        <div style="position:relative;height:6px;background:#e2e8f0;border-radius:100px;overflow:hidden;">
+          <div style="position:absolute;left:0;top:0;height:100%;width:${pct}%;background:${barColor};border-radius:100px;transition:width .6s;"></div>
+        </div>
+        <span style="font-size:12.5px;font-weight:600;color:${over?"#ef4444":"#374151"};text-align:right;white-space:nowrap;">
+          ${fmt(am.spent)} / ${fmt(am.totalBudget)}
+        </span>
+      </div>
+
+      <!-- Expanded detail metrics -->
+      ${isOpen ? `
+      <div style="background:#f8fafc;border-top:1px solid #f1f5f9;padding:20px 28px 24px 64px;animation:fadeUp .25s ease both;">
+        <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:14px;">
+          Detailed metrics <span style="color:#94a3b8;font-weight:400;">(time period: ${period})</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px 32px;">
+          ${[
+            {label:"Impressions",        val:fmtK(m.impressions)},
+            {label:"Clicks",             val:fmtK(m.clicks)},
+            {label:"Leads",              val:fmtK(m.leads)},
+            {label:"EV",                 val:fmt(m.ev)},
+            {label:"First Deposit Users",val:m.firstDeposit.toLocaleString()},
+            {label:"Deposit Amount",     val:fmt(m.depositAmount)},
+          ].map(item=>`
+            <div>
+              <div style="font-size:11px;color:#94a3b8;font-weight:600;margin-bottom:4px;">${item.label}</div>
+              <div style="font-size:20px;font-weight:700;color:#0f172a;">${item.val}</div>
+            </div>`).join("")}
+        </div>
+      </div>` : ""}
+    </div>`;
+  }
+
+  // Rankings section
+  const rkOpt  = RANK_OPTIONS.find(r=>r.key===rankBy) || RANK_OPTIONS[0];
+  const ranked = [...ADS_MANAGERS].sort((a,b) => {
+    if (rankBy === "depositAmount" || rankBy === "ev") return b.metrics[rankBy] - a.metrics[rankBy];
+    return b.metrics[rankBy] - a.metrics[rankBy];
+  });
+
+  const medals = ["🥇","🥈","🥉"];
+
+  return `
+  <div style="animation:fadeUp .4s ease both;">
+
+    <!-- Page header -->
+    <div style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div>
+          <h1 style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-.5px;">Ads Performance</h1>
+          <p style="font-size:13px;color:#64748b;margin-top:3px;">比较投手表现，查看预算使用与关键指标。</p>
+        </div>
+        <!-- Period selector -->
+        <div style="display:flex;gap:6px;">
+          ${periods.map(p=>`
+            <button onclick="setPeriod('${p}')"
+              style="padding:7px 14px;border-radius:8px;border:1.5px solid ${S.perf.period===p?"#3b82f6":"#e2e8f0"};background:${S.perf.period===p?"#eff6ff":"#fff"};color:${S.perf.period===p?"#2563eb":"#64748b"};font-size:12px;font-weight:${S.perf.period===p?700:500};cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s;">
+              ${p}
+            </button>`).join("")}
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:12px;font-weight:600;color:#94a3b8;white-space:nowrap;">Filter by:</span>
+        ${filterDropdown("filterChannel",  "Channel",  filterChannel,  FILTER_OPTS.channel)}
+        ${filterDropdown("filterCampaign", "Campaign", filterCampaign, FILTER_OPTS.campaign)}
+        ${filterDropdown("filterCountry",  "Country",  filterCountry,  FILTER_OPTS.country)}
+
+        <!-- Active filter chips -->
+        ${activeFilters.map(f=>`
+          <div style="display:flex;align-items:center;gap:5px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:20px;padding:4px 10px 4px 12px;">
+            <span style="font-size:12px;color:#2563eb;font-weight:500;">${f.label}</span>
+            <span onclick="setPerfFilter('${f.key}','All')" style="font-size:11px;color:#93c5fd;cursor:pointer;font-weight:700;padding:1px 2px;border-radius:50%;"
+              onmouseover="this.style.color='#2563eb'" onmouseout="this.style.color='#93c5fd'">✕</span>
+          </div>`).join("")}
+
+        ${hasFilters ? `
+          <button onclick="clearAllFilters()"
+            style="padding:5px 12px;border-radius:8px;border:none;background:transparent;color:#94a3b8;font-size:12px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:underline;"
+            onmouseover="this.style.color='#374151'" onmouseout="this.style.color='#94a3b8'">
+            Clear all
+          </button>` : ""}
+      </div>
+    </div>
+
+    <!-- Budget vs Spent Table -->
+    <div style="background:#fff;border-radius:16px;box-shadow:0 1px 12px rgba(0,0,0,.06);margin-bottom:24px;overflow:hidden;">
+      <div style="padding:18px 20px 14px;border-bottom:1px solid #f1f5f9;">
+        <div style="font-size:14px;font-weight:700;color:#0f172a;">Ads Manager Budget vs Spent</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">Click a row to expand and view detailed metrics (impressions, clicks, leads, EV, first deposit users, deposit amount).</div>
+      </div>
+      <!-- Table header -->
+      <div style="display:grid;grid-template-columns:32px 1fr 120px 1fr 160px;padding:10px 20px;gap:12px;background:#f8fafc;border-bottom:1px solid #f1f5f9;">
+        <div></div>
+        <div style="font-size:12px;font-weight:700;color:#374151;">Ads Manager</div>
+        <div style="font-size:12px;font-weight:700;color:#374151;text-align:right;">Total Budget</div>
+        <div style="font-size:12px;font-weight:700;color:#374151;padding-left:8px;">Actual Spent</div>
+        <div></div>
+      </div>
+      ${ADS_MANAGERS.map(am => budgetRow(am)).join("")}
+    </div>
+
+    <!-- Rankings -->
+    <div style="background:#fff;border-radius:16px;box-shadow:0 1px 12px rgba(0,0,0,.06);overflow:hidden;">
+      <div style="padding:18px 20px 14px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:14px;font-weight:700;color:#0f172a;">Rankings</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:12px;color:#64748b;">Rank by:</span>
+          <select onchange="setRankBy(this.value)"
+            style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;font-weight:600;color:#374151;background:#fff;cursor:pointer;font-family:'Outfit',sans-serif;">
+            ${RANK_OPTIONS.map(r=>`<option value="${r.key}"${rankBy===r.key?" selected":""}>${r.label}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+      <!-- Table header -->
+      <div style="display:grid;grid-template-columns:60px 1fr 180px;padding:10px 20px;gap:12px;background:#f8fafc;border-bottom:1px solid #f1f5f9;">
+        <div style="font-size:12px;font-weight:700;color:#374151;">Rank</div>
+        <div style="font-size:12px;font-weight:700;color:#374151;">Ads Manager</div>
+        <div style="font-size:12px;font-weight:700;color:#374151;text-align:right;">${rkOpt.label}</div>
+      </div>
+      ${ranked.map((am, idx) => {
+        const val = rankBy==="depositAmount"||rankBy==="ev" ? fmt(am.metrics[rankBy]) : rankBy==="clicks"||rankBy==="impressions" ? fmtK(am.metrics[rankBy]) : rankBy==="firstDeposit" ? am.metrics.firstDeposit.toLocaleString() : fmtK(am.metrics[rankBy]);
+        const isTop = idx < 3;
+        return `
+        <div style="display:grid;grid-template-columns:60px 1fr 180px;padding:14px 20px;gap:12px;border-bottom:1px solid #f8fafc;align-items:center;transition:background .12s;"
+          onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:${isTop?18:13}px;">${medals[idx]||""}</span>
+            <span style="font-size:13px;font-weight:${isTop?700:500};color:${isTop?"#0f172a":"#64748b"};">${isTop?"":idx+1}</span>
+          </div>
+          <div style="font-size:13.5px;font-weight:${isTop?600:400};color:#0f172a;">${am.name}</div>
+          <div style="font-size:14px;font-weight:${isTop?700:500};color:${isTop?"#2563eb":"#374151"};text-align:right;">${val}</div>
+        </div>`;
+      }).join("")}
+    </div>
+
+  </div>`;
+}
+
+// ─── Digital Asset Management ─────────────────────────────────────────────────
+const COMPLIANCE_COLOR = {
+  Approved: {bg:"#dcfce7",color:"#166534",dot:"#22c55e"},
+  Pending:  {bg:"#fef9c3",color:"#854d0e",dot:"#eab308"},
+  Draft:    {bg:"#f1f5f9",color:"#475569",dot:"#94a3b8"},
+  Rejected: {bg:"#fee2e2",color:"#991b1b",dot:"#ef4444"},
+};
+const TYPE_ICON = { Image:"🖼️", Video:"🎬", PDF:"📄", "Landing Page":"🌐", GIF:"✨", Ebook:"📚" };
+
+function complianceBadge(s) {
+  const c = COMPLIANCE_COLOR[s]||COMPLIANCE_COLOR.Draft;
+  return `<span style="display:inline-flex;align-items:center;gap:4px;background:${c.bg};color:${c.color};border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;">
+    <span style="width:5px;height:5px;border-radius:50%;background:${c.dot};flex-shrink:0;"></span>${s}
+  </span>`;
+}
+
+function isExpiringSoon(dateStr) {
+  if (!dateStr) return false;
+  const diff = (new Date(dateStr) - new Date()) / 86400000;
+  return diff >= 0 && diff <= 30;
+}
+function isExpired(dateStr) {
+  if (!dateStr) return false;
+  return new Date(dateStr) < new Date();
+}
+
+function damLibraryHTML() {
+  const { view, filters, searchQ, sort, selectedAssetId } = S.dam;
+
+  // ── filter logic ──
+  let assets = S.assets.filter(a => {
+    if (searchQ && !a.name.toLowerCase().includes(searchQ.toLowerCase()) && !a.id.toLowerCase().includes(searchQ.toLowerCase())) return false;
+    if (filters.type     !== "All" && a.type !== filters.type) return false;
+    if (filters.channel  !== "All" && !a.channels.includes(filters.channel)) return false;
+    if (filters.country  !== "All" && !a.countries.includes(filters.country)) return false;
+    if (filters.language !== "All" && !a.languages.includes(filters.language)) return false;
+    if (filters.funnel   !== "All" && a.funnel !== filters.funnel) return false;
+    if (filters.compliance!=="All" && a.complianceStatus !== filters.compliance) return false;
+    if (filters.campaign !== "All" && a.campaign !== filters.campaign) return false;
+    if (filters.activeOnly && !a.isActive) return false;
+    return true;
+  });
+
+  if (sort === "uploadDate") assets.sort((a,b) => new Date(b.uploadDate)-new Date(a.uploadDate));
+  else if (sort === "name")  assets.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sort === "perf")  assets.sort((a,b) => (b.performance?.impressions||0)-(a.performance?.impressions||0));
+
+  const selAsset = selectedAssetId ? S.assets.find(a=>a.id===selectedAssetId) : null;
+
+  function filterSelect(field, label, opts) {
+    const val = filters[field];
+    const active = val !== "All";
+    return `<select onchange="setDamFilter('${field}',this.value)"
+      style="padding:7px 10px;border:1.5px solid ${active?"#3b82f6":"#e2e8f0"};border-radius:8px;font-size:12px;
+             font-weight:${active?700:500};color:${active?"#2563eb":"#374151"};background:${active?"#eff6ff":"#fff"};
+             cursor:pointer;font-family:'Outfit',sans-serif;min-width:100px;">
+      <option value="All">${label}</option>
+      ${opts.map(o=>`<option value="${o}"${val===o?" selected":""}>${o}</option>`).join("")}
+    </select>`;
+  }
+
+  function assetCard(a) {
+    const expSoon = isExpiringSoon(a.expiryDate);
+    const expd    = isExpired(a.expiryDate);
+    const isSel   = selectedAssetId === a.id;
+    return `
+    <div onclick="selectAsset('${a.id}')" style="background:#fff;border-radius:14px;border:2px solid ${isSel?"#3b82f6":"#e8ecf0"};overflow:hidden;cursor:pointer;transition:all .15s;position:relative;"
+      onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,.1)';this.style.borderColor='${isSel?"#3b82f6":"#c7d2fe"}'"
+      onmouseout="this.style.boxShadow='none';this.style.borderColor='${isSel?"#3b82f6":"#e8ecf0"}'">
+      <!-- Thumbnail -->
+      <div style="position:relative;height:130px;background:#f1f5f9;overflow:hidden;">
+        <img src="${a.thumbnail}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>
+        <div style="position:absolute;top:8px;left:8px;">${complianceBadge(a.complianceStatus)}</div>
+        <div style="position:absolute;top:8px;right:8px;display:flex;gap:4px;">
+          ${a.isActive?`<span style="background:#22c55e;color:#fff;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;">Active</span>`:""}
+          <span onclick="event.stopPropagation();toggleFav('${a.id}')" style="background:rgba(255,255,255,.9);border-radius:6px;padding:2px 6px;font-size:14px;cursor:pointer;">${a.favorites?"❤️":"🤍"}</span>
+        </div>
+        ${expd?`<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(239,68,68,.85);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;text-align:center;">⚠️ EXPIRED</div>`:""}
+        ${expSoon&&!expd?`<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(245,158,11,.85);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;text-align:center;">⏰ Expires ${a.expiryDate}</div>`:""}
+      </div>
+      <!-- Info -->
+      <div style="padding:12px 13px;">
+        <div style="font-size:12px;color:#94a3b8;font-weight:600;margin-bottom:3px;">${TYPE_ICON[a.type]||"📁"} ${a.type} · ${a.format} · ${a.dimensions}</div>
+        <div style="font-size:13px;font-weight:600;color:#0f172a;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${a.name}">${a.name}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">
+          ${a.channels.slice(0,2).map(ch=>`<span style="background:#f1f5f9;color:#475569;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:600;">${ch}</span>`).join("")}
+          ${a.countries.slice(0,2).map(c=>`<span style="background:#eff6ff;color:#2563eb;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:600;">${c}</span>`).join("")}
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:11px;color:#94a3b8;">${a.size} · ${a.uploadDate}</span>
+          ${a.performance?`<span style="font-size:11px;font-weight:600;color:#7c3aed;">${a.performance.impressions>=1000000?(a.performance.impressions/1000000).toFixed(1)+"M":(a.performance.impressions/1000).toFixed(0)+"K"} impr.</span>`:""}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function assetListRow(a) {
+    const expSoon = isExpiringSoon(a.expiryDate);
+    const expd    = isExpired(a.expiryDate);
+    return `
+    <div onclick="selectAsset('${a.id}')" style="display:grid;grid-template-columns:40px 260px 100px 100px 120px 140px 120px 80px 44px;align-items:center;padding:11px 16px;gap:10px;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background .1s;"
+      onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+      <span style="font-size:18px;text-align:center;">${TYPE_ICON[a.type]||"📁"}</span>
+      <div>
+        <div style="font-size:12.5px;font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</div>
+        <div style="font-size:11px;color:#94a3b8;">${a.id}</div>
+      </div>
+      <span style="font-size:12px;color:#374151;">${a.format} · ${a.size}</span>
+      <span style="font-size:12px;color:#374151;">${a.dimensions}</span>
+      <div>${complianceBadge(a.complianceStatus)}</div>
+      <span style="font-size:12px;color:${expd?"#ef4444":expSoon?"#f59e0b":"#374151"};font-weight:${expd||expSoon?700:400};">${a.expiryDate||"—"}${expd?" ⚠️":expSoon?" ⏰":""}</span>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;">${a.countries.slice(0,3).map(c=>`<span style="background:#eff6ff;color:#2563eb;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:600;">${c}</span>`).join("")}</div>
+      <span style="font-size:12px;font-weight:700;color:${a.isActive?"#22c55e":"#94a3b8"};">${a.isActive?"Active":"—"}</span>
+      <span onclick="event.stopPropagation();toggleFav('${a.id}')" style="font-size:16px;cursor:pointer;text-align:center;">${a.favorites?"❤️":"🤍"}</span>
+    </div>`;
+  }
+
+  return `
+  <div style="display:flex;gap:0;height:100%;animation:fadeUp .4s ease both;">
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
+
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <h1 style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-.5px;">Asset Library</h1>
+          <p style="font-size:13px;color:#64748b;margin-top:3px;">${assets.length} assets found · ${S.assets.filter(a=>a.complianceStatus==="Pending").length} pending approval · ${S.assets.filter(a=>isExpiringSoon(a.expiryDate)&&!isExpired(a.expiryDate)).length} expiring soon</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <!-- View toggle -->
+          <div style="display:flex;border:1.5px solid #e2e8f0;border-radius:9px;overflow:hidden;">
+            <button onclick="setDamView('grid')" style="padding:7px 12px;border:none;background:${view==="grid"?"#2563eb":"#fff"};color:${view==="grid"?"#fff":"#64748b"};cursor:pointer;font-size:13px;font-family:'Outfit',sans-serif;">⊞</button>
+            <button onclick="setDamView('list')" style="padding:7px 12px;border:none;background:${view==="list"?"#2563eb":"#fff"};color:${view==="list"?"#fff":"#64748b"};cursor:pointer;font-size:13px;font-family:'Outfit',sans-serif;">☰</button>
+          </div>
+          ${ROLES.current!=="Sales"?`
+          <button onclick="setActiveNav('Upload Asset')"
+            style="padding:9px 18px;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;box-shadow:0 3px 12px rgba(37,99,235,.3);">
+            ＋ Upload Asset
+          </button>`:""}
+        </div>
+      </div>
+
+      <!-- Search + Filters -->
+      <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:16px;box-shadow:0 1px 8px rgba(0,0,0,.05);">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <!-- Search -->
+          <div style="position:relative;flex:1;min-width:180px;">
+            <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;">🔍</span>
+            <input class="field-input" placeholder="Search by name or ID..." value="${searchQ}"
+              oninput="setDamSearch(this.value)"
+              style="padding-left:32px;font-size:13px;height:36px;"/>
+          </div>
+          ${filterSelect("type",     "Asset Type",  ASSET_TYPES)}
+          ${filterSelect("channel",  "Channel",     ALL_CHANNELS)}
+          ${filterSelect("country",  "Country",     ALL_COUNTRIES)}
+          ${filterSelect("language", "Language",    ALL_LANGUAGES)}
+          ${filterSelect("funnel",   "Funnel",      FUNNEL_STAGES)}
+          ${filterSelect("compliance","Status",     COMPLIANCE_STATUSES)}
+          <!-- Active toggle -->
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12.5px;font-weight:500;color:#374151;">
+            <div onclick="toggleDamActive()" style="width:36px;height:20px;border-radius:100px;background:${filters.activeOnly?"#22c55e":"#e2e8f0"};position:relative;cursor:pointer;transition:background .2s;">
+              <div style="position:absolute;top:2px;left:${filters.activeOnly?"18":"2"}px;width:16px;height:16px;background:#fff;border-radius:50%;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>
+            </div>
+            Active only
+          </label>
+          <!-- Sort -->
+          <select onchange="setDamSort(this.value)"
+            style="padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;font-weight:500;color:#374151;background:#fff;cursor:pointer;font-family:'Outfit',sans-serif;">
+            <option value="uploadDate"${sort==="uploadDate"?" selected":""}>Sort: Newest</option>
+            <option value="name"${sort==="name"?" selected":""}>Sort: Name A–Z</option>
+            <option value="perf"${sort==="perf"?" selected":""}>Sort: Performance</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Expiry warning banner -->
+      ${S.assets.filter(a=>isExpired(a.expiryDate)&&a.isActive).length>0?`
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:16px;">⚠️</span>
+        <span style="font-size:13px;color:#991b1b;font-weight:600;">${S.assets.filter(a=>isExpired(a.expiryDate)&&a.isActive).length} active asset(s) have expired — please review and deactivate immediately.</span>
+      </div>`:""}
+
+      <!-- Grid / List -->
+      ${assets.length===0?`<div style="text-align:center;padding:60px;color:#94a3b8;font-size:14px;">No assets match the current filters.</div>`:""}
+
+      ${view==="grid"?`
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;">
+        ${assets.map(a=>assetCard(a)).join("")}
+      </div>
+      `:`
+      <!-- List header -->
+      <div style="display:grid;grid-template-columns:40px 260px 100px 100px 120px 140px 120px 80px 44px;padding:9px 16px;gap:10px;background:#f8fafc;border-radius:12px 12px 0 0;border:1px solid #e8ecf0;">
+        ${["","Name","Format","Dimensions","Status","Expiry","Countries","Active","Fav"].map(h=>`<div style="font-size:11px;font-weight:700;color:#64748b;">${h}</div>`).join("")}
+      </div>
+      <div style="background:#fff;border-radius:0 0 12px 12px;border:1px solid #e8ecf0;border-top:none;overflow:hidden;">
+        ${assets.map(a=>assetListRow(a)).join("")}
+      </div>
+      `}
+    </div>
+
+    <!-- Detail panel (right side) -->
+    ${selAsset?`
+    <div style="width:320px;flex-shrink:0;margin-left:20px;background:#fff;border-radius:16px;box-shadow:0 1px 16px rgba(0,0,0,.08);overflow:hidden;position:sticky;top:0;max-height:calc(100vh - 120px);overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #f1f5f9;">
+        <div style="font-size:13px;font-weight:700;color:#0f172a;">Asset Detail</div>
+        <span onclick="selectAsset(null)" style="cursor:pointer;color:#94a3b8;font-size:16px;padding:2px 6px;border-radius:6px;"
+          onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">✕</span>
+      </div>
+      <img src="${selAsset.thumbnail}" style="width:100%;height:160px;object-fit:cover;"/>
+      <div style="padding:16px;">
+        <div style="font-size:11px;color:#94a3b8;font-weight:600;margin-bottom:4px;">${selAsset.id}</div>
+        <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:10px;line-height:1.4;">${selAsset.name}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+          ${complianceBadge(selAsset.complianceStatus)}
+          ${selAsset.isActive?`<span style="background:#dcfce7;color:#166534;border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;">Active</span>`:`<span style="background:#f1f5f9;color:#64748b;border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;">Inactive</span>`}
+        </div>
+
+        <!-- Detail rows -->
+        ${[
+          ["Type",      `${TYPE_ICON[selAsset.type]} ${selAsset.type}`],
+          ["Format",    selAsset.format],
+          ["Size",      selAsset.size],
+          ["Dimensions",selAsset.dimensions],
+          ["Uploaded",  `${selAsset.uploadedBy} · ${selAsset.uploadDate}`],
+          ["Campaign",  selAsset.campaign],
+          ["Funnel",    selAsset.funnel],
+          ["Channels",  selAsset.channels.join(", ")||"—"],
+          ["Countries", selAsset.countries.join(", ")||"—"],
+          ["Languages", selAsset.languages.join(", ")||"—"],
+          ["Entity",    selAsset.entity.join(", ")||"—"],
+          ["License",   selAsset.licenseType.join(", ")||"—"],
+          ["Restricted",selAsset.restrictedRegions.join(", ")||"None"],
+          ["Expiry",    selAsset.expiryDate||(isExpired(selAsset.expiryDate)?"⚠️ EXPIRED":isExpiringSoon(selAsset.expiryDate)?"⏰ Soon":"—")],
+          ["Approved by",selAsset.approvedBy||"—"],
+        ].map(([k,v])=>`
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:12.5px;">
+            <span style="color:#94a3b8;font-weight:600;min-width:90px;">${k}</span>
+            <span style="color:#0f172a;font-weight:500;text-align:right;max-width:160px;word-break:break-word;">${v}</span>
+          </div>`).join("")}
+
+        <!-- Performance -->
+        ${selAsset.performance?`
+        <div style="background:linear-gradient(135deg,#f5f3ff,#eff6ff);border-radius:12px;padding:12px 14px;margin-top:12px;">
+          <div style="font-size:11px;font-weight:700;color:#7c3aed;margin-bottom:8px;">📊 PERFORMANCE</div>
+          ${[
+            ["Impressions", selAsset.performance.impressions>=1000000?(selAsset.performance.impressions/1000000).toFixed(1)+"M":(selAsset.performance.impressions/1000).toFixed(0)+"K"],
+            ["CTR",         selAsset.performance.ctr],
+            ["CPC",         selAsset.performance.cpc],
+          ].map(([k,v])=>`
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;">
+              <span style="color:#7c3aed;">${k}</span><span style="font-weight:700;color:#0f172a;">${v}</span>
+            </div>`).join("")}
+        </div>`:""}
+
+        <!-- Actions -->
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;">
+          <button style="width:100%;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">
+            ⬇ Download
+          </button>
+
+          <!-- Generate Tracking Link button -->
+          <button onclick="openTlModal('${selAsset.id}')"
+            style="width:100%;padding:10px;background:#f5f3ff;color:#7c3aed;border:1.5px solid #ddd6fe;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;"
+            onmouseover="this.style.background='#ede9fe'" onmouseout="this.style.background='#f5f3ff'">
+            🔗 Generate Tracking Link
+          </button>
+
+          ${ROLES.current==="Compliance"&&selAsset.complianceStatus==="Pending"?`
+          <div style="display:flex;gap:8px;">
+            <button onclick="approveAsset('${selAsset.id}')" style="flex:1;padding:9px;background:#22c55e;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">✓ Approve</button>
+            <button onclick="rejectAsset('${selAsset.id}')"  style="flex:1;padding:9px;background:#ef4444;color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">✕ Reject</button>
+          </div>`:""}
+          ${ROLES.current==="Marketing"||ROLES.current==="Admin"?`
+          <button onclick="toggleAssetActive('${selAsset.id}')" style="width:100%;padding:9px;background:${selAsset.isActive?"#fef2f2":"#f0fdf4"};color:${selAsset.isActive?"#991b1b":"#166534"};border:1.5px solid ${selAsset.isActive?"#fecaca":"#bbf7d0"};border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">
+            ${selAsset.isActive?"Deactivate Asset":"Activate Asset"}
+          </button>`:""}
+        </div>
+      </div>
+    </div>`:""}
+
+    <!-- Tracking Link Modal overlay -->
+    ${S.dam.tlModal.show && selAsset ? (() => {
+      const tl = S.dam.tlModal;
+      const a  = selAsset;
+      // build UTM preview
+      const srcVal = tl.source || (a.channels[0]||"").toLowerCase().replace(/\s+/g,"-");
+      const ctrVal = tl.country || a.countries[0] || "";
+      const campVal = (a.campaign||"").toLowerCase().replace(/\s+/g,"-");
+      const contentVal = a.id + "_" + a.name.substring(0,20).replace(/\s+/g,"-");
+      const termVal = tl.term || "";
+      const base = tl.landingUrl || "https://yoursite.com/lp";
+      const params = [
+        `utm_source=${srcVal}`,
+        `utm_medium=paid`,
+        `utm_campaign=${campVal}`,
+        `utm_content=${contentVal}`,
+        ctrVal ? `utm_country=${ctrVal}` : "",
+        termVal ? `utm_term=${termVal}` : "",
+      ].filter(Boolean).join("&");
+      const fullUrl = base.includes("?") ? `${base}&${params}` : `${base}?${params}`;
+
+      return `
+      <div style="position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:999;display:flex;align-items:center;justify-content:center;animation:fadeUp .2s ease both;"
+        onclick="if(event.target===this)closeTlModal()">
+        <div style="background:#fff;border-radius:20px;width:580px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;animation:pop .3s cubic-bezier(.34,1.56,.64,1) both;">
+
+          <!-- Modal header -->
+          <div style="background:linear-gradient(135deg,#f5f3ff,#eff6ff);padding:18px 22px;border-bottom:1px solid #e8ecf0;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:15px;font-weight:800;color:#0f172a;">🔗 Generate Tracking Link</div>
+              <div style="font-size:12px;color:#7c3aed;margin-top:2px;font-weight:500;">${a.id} · ${a.name.substring(0,36)}${a.name.length>36?"…":""}</div>
+            </div>
+            <span onclick="closeTlModal()" style="cursor:pointer;color:#94a3b8;font-size:18px;padding:4px 8px;border-radius:8px;"
+              onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">✕</span>
+          </div>
+
+          <div style="padding:22px 24px;">
+
+            <!-- Auto-filled fields -->
+            <div style="font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.07em;margin-bottom:10px;">AUTO-FILLED FROM ASSET</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;">
+              ${[
+                ["utm_campaign", campVal, "#2563eb","#eff6ff"],
+                ["utm_medium",   "paid",  "#475569","#f1f5f9"],
+                ["utm_content",  contentVal.substring(0,18)+"…", "#7c3aed","#f5f3ff"],
+              ].map(([k,v,c,bg])=>`
+                <div style="background:${bg};border-radius:10px;padding:10px 12px;">
+                  <div style="font-size:10px;font-weight:700;color:${c};margin-bottom:3px;">${k}</div>
+                  <div style="font-size:11.5px;font-weight:600;color:#0f172a;word-break:break-all;">${v}</div>
+                </div>`).join("")}
+            </div>
+
+            <!-- Editable fields -->
+            <div style="font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.07em;margin-bottom:10px;">FILL IN / CONFIRM</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+              <div>
+                <label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px;">SOURCE (utm_source) *</label>
+                <select class="field-input" onchange="setTlField('source',this.value);rerender();" style="font-size:13px;">
+                  <option value="">Auto: ${srcVal}</option>
+                  ${ALL_CHANNELS.map(ch=>`<option value="${ch.toLowerCase().replace(/\s+/g,"-")}"${tl.source===ch.toLowerCase().replace(/\s+/g,"-")?" selected":""}>${ch}</option>`).join("")}
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px;">COUNTRY</label>
+                <select class="field-input" onchange="setTlField('country',this.value);rerender();" style="font-size:13px;">
+                  <option value="">Auto: ${ctrVal||"—"}</option>
+                  ${ALL_COUNTRIES.map(c=>`<option value="${c}"${tl.country===c?" selected":""}>${c}</option>`).join("")}
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px;">UTM TERM <span style="font-weight:400;">(optional)</span></label>
+                <input class="field-input" placeholder="e.g. deposit+bonus" value="${tl.term}"
+                  oninput="setTlField('term',this.value);rerender();" style="font-size:13px;"/>
+              </div>
+            </div>
+
+            <!-- Landing Page URL — manual required -->
+            <div style="margin-bottom:18px;">
+              <label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px;">
+                LANDING PAGE URL <span style="color:#ef4444;">*</span>
+              </label>
+              <input class="field-input" placeholder="https://zeromr.com/lp/deposit-bonus" value="${tl.landingUrl}"
+                oninput="setTlField('landingUrl',this.value);rerender();"
+                style="font-size:13px;font-family:monospace;"/>
+              <div style="font-size:11px;color:#94a3b8;margin-top:4px;">必须手动填写，UTM 参数将自动附加</div>
+            </div>
+
+            <!-- Generated URL preview -->
+            <div style="background:#0f172a;border-radius:12px;padding:14px 16px;margin-bottom:18px;">
+              <div style="font-size:10px;font-weight:700;color:#475569;letter-spacing:.08em;margin-bottom:6px;">GENERATED URL PREVIEW</div>
+              <div style="font-size:11.5px;color:${tl.landingUrl?"#a5f3fc":"#475569"};font-family:monospace;word-break:break-all;line-height:1.6;">
+                ${tl.landingUrl ? fullUrl : '<span style="color:#475569;font-style:italic;">Enter a landing page URL above to preview...</span>'}
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+              <button onclick="closeTlModal()" style="padding:10px 20px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;color:#374151;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;">
+                Cancel
+              </button>
+              <button onclick="copyTlUrl('${fullUrl}')" ${!tl.landingUrl?"disabled":""}
+                style="padding:10px 24px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;
+                       background:${tl.landingUrl?"linear-gradient(135deg,#7c3aed,#2563eb)":"#e2e8f0"};
+                       color:${tl.landingUrl?"#fff":"#94a3b8"};
+                       box-shadow:${tl.landingUrl?"0 4px 14px rgba(124,58,237,.3)":"none"};">
+                📋 Copy Link
+              </button>
+            </div>
+
+            <!-- Copied confirmation -->
+            ${tl.generatedUrl ? `
+            <div style="margin-top:12px;background:#dcfce7;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;animation:fadeUp .2s ease both;">
+              <span style="font-size:16px;">✅</span>
+              <span style="font-size:12.5px;font-weight:600;color:#166534;">Link copied to clipboard!</span>
+            </div>` : ""}
+          </div>
+        </div>
+      </div>`;
+    })() : ""}
+
+  </div>`;
+}
+
+function damUploadHTML() {
+  const n = S.dam.newAsset;
+  function multiChip(field, opts, color="#2563eb", bg="#eff6ff") {
+    return `<div style="display:flex;flex-wrap:wrap;gap:6px;">
+      ${opts.map(o=>{
+        const sel = (n[field]||[]).includes(o);
+        return `<button onclick="toggleDamField('${field}','${o}')"
+          style="padding:6px 12px;border-radius:8px;border:1.5px solid ${sel?color:"#e2e8f0"};
+                 background:${sel?bg:"#fafafa"};color:${sel?color:"#64748b"};
+                 font-size:12px;font-weight:${sel?700:500};cursor:pointer;font-family:'Outfit',sans-serif;transition:all .12s;">
+          ${sel?"✓ ":""}${o}
+        </button>`;
+      }).join("")}
+    </div>`;
+  }
+  function frow(label, required, content) {
+    return `<div style="margin-bottom:18px;">
+      <label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:7px;">${label}${required?` <span style="color:#ef4444;">*</span>`:""}</label>
+      ${content}
+    </div>`;
+  }
+
+  return `
+  <div style="animation:fadeUp .4s ease both;max-width:800px;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
+      <button onclick="setActiveNav('Asset Library')" style="padding:8px 14px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;color:#374151;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;">← Back</button>
+      <div>
+        <h1 style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-.5px;">Upload Asset</h1>
+        <p style="font-size:13px;color:#64748b;margin-top:2px;">填写素材信息，提交后状态为 Draft，需 Compliance 审批。</p>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:16px;padding:28px 30px;box-shadow:0 1px 12px rgba(0,0,0,.06);">
+
+      <!-- File drop zone -->
+      <div style="border:2px dashed #cbd5e1;border-radius:14px;padding:32px;text-align:center;background:#f8fafc;margin-bottom:24px;cursor:pointer;"
+        onmouseover="this.style.borderColor='#3b82f6';this.style.background='#eff6ff'" onmouseout="this.style.borderColor='#cbd5e1';this.style.background='#f8fafc'">
+        <div style="font-size:36px;margin-bottom:8px;">📁</div>
+        <div style="font-size:14px;font-weight:700;color:#374151;margin-bottom:4px;">Drag & drop files here, or click to browse</div>
+        <div style="font-size:12px;color:#94a3b8;">Supports: JPG, PNG, MP4, MOV, PDF, GIF, HTML · Max 100MB</div>
+        <div style="margin-top:12px;font-size:12px;color:#94a3b8;">File format, size, and dimensions will be auto-detected on upload</div>
+      </div>
+
+      <!-- Section: Basic Info -->
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;">📋 Basic Information</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>${frow("Asset Name","*",`<input class="field-input" placeholder="e.g. Zero_DepositBonus_1080x1080_EN" value="${n.name}" oninput="setDamNew('name',this.value)" style="font-size:13px;"/>`)}</div>
+        <div>${frow("Asset Type","*",`<select class="field-input" onchange="setDamNew('type',this.value)" style="font-size:13px;">
+          ${ASSET_TYPES.map(t=>`<option value="${t}"${n.type===t?" selected":""}>${t}</option>`).join("")}
+        </select>`)}</div>
+      </div>
+      <div style="background:#f8fafc;border-radius:10px;padding:12px 16px;margin-bottom:18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        ${[["File Format","Auto-detected"],["File Size","Auto-detected"],["Dimensions","Auto-detected"]].map(([l,v])=>`
+          <div><div style="font-size:11px;color:#94a3b8;font-weight:600;margin-bottom:3px;">${l}</div>
+          <div style="font-size:13px;color:#94a3b8;font-style:italic;">${v}</div></div>`).join("")}
+      </div>
+
+      <!-- Section: Marketing -->
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;">📢 Marketing Information</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>${frow("Campaign","*",`<select class="field-input" onchange="setDamNew('campaign',this.value)" style="font-size:13px;">
+          <option value="">Select campaign...</option>
+          ${S.campaigns.map(c=>`<option value="${c.name}"${n.campaign===c.name?" selected":""}>${c.name}</option>`).join("")}
+        </select>`)}</div>
+        <div>${frow("Type","*",`<select class="field-input" onchange="setDamNew('mktType',this.value)" style="font-size:13px;">
+          ${MKT_TYPES.map(t=>`<option value="${t}"${n.mktType===t?" selected":""}>${t}</option>`).join("")}
+        </select>`)}</div>
+        <div>${frow("Funnel Stage","*",`<select class="field-input" onchange="setDamNew('funnel',this.value)" style="font-size:13px;">
+          ${FUNNEL_STAGES.map(t=>`<option value="${t}"${n.funnel===t?" selected":""}>${t}</option>`).join("")}
+        </select>`)}</div>
+      </div>
+      ${frow("Channel","*",multiChip("channels",ALL_CHANNELS))}
+      ${frow("Target Country","*",multiChip("countries",ALL_COUNTRIES,"#2563eb","#eff6ff"))}
+      ${frow("Language","*",multiChip("languages",ALL_LANGUAGES,"#7c3aed","#f5f3ff"))}
+      ${frow("Entity","*",multiChip("entity",ALL_ENTITIES,"#166534","#dcfce7"))}
+
+      <!-- Section: Compliance -->
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin:20px 0 14px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;">⚖️ Compliance & Approval</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>${frow("Expiry Date","*",`<input class="field-input" type="date" value="${n.expiryDate}" oninput="setDamNew('expiryDate',this.value)" style="font-size:13px;"/>
+          <div style="font-size:11px;color:#f59e0b;margin-top:4px;">⚠️ Required — expired assets will be flagged automatically</div>`)}</div>
+      </div>
+      ${frow("License Type","*",multiChip("licenseType",LICENSE_TYPES,"#1d4ed8","#dbeafe"))}
+      ${frow("Restricted Region","",multiChip("restrictedRegions",RESTRICTED_REGIONS,"#991b1b","#fee2e2"))}
+
+      <!-- Submit -->
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid #f1f5f9;">
+        <button onclick="setActiveNav('Asset Library')" style="padding:11px 22px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;color:#374151;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;">Cancel</button>
+        <button onclick="submitAsset()"
+          ${(!n.name||!n.campaign||n.channels.length===0)?"disabled":""}
+          style="padding:11px 28px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;
+                 background:${(!n.name||!n.campaign||n.channels.length===0)?"#e2e8f0":"linear-gradient(135deg,#2563eb,#4f46e5)"};
+                 color:${(!n.name||!n.campaign||n.channels.length===0)?"#94a3b8":"#fff"};
+                 box-shadow:${(!n.name||!n.campaign||n.channels.length===0)?"none":"0 4px 14px rgba(37,99,235,.3)"};">
+          Submit for Approval →
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── Channel Budget Management Page ──────────────────────────────────────────
+function fmtCurrency(n, cur) {
+  const sym = cur==="EUR"?"€":cur==="AUD"?"A$":cur==="GBP"?"£":"$";
+  return sym + Number(n||0).toLocaleString();
+}
+const REGION_COLOR = { APAC:"#2563eb", LATAM:"#16a085", EMEA:"#7c3aed" };
+const CH_TYPE_BADGE = t => t==="programmatic"
+  ? `<span style="background:#eff6ff;color:#2563eb;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:700;">Programmatic</span>`
+  : `<span style="background:#fef3e2;color:#b45309;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:700;">External Media</span>`;
+
+const statusBadgeCbm = s => {
+  const cfg = s==="Paid" ? {bg:"#dcfce7",color:"#166534",dot:"#22c55e"} : {bg:"#fef9c3",color:"#854d0e",dot:"#eab308"};
+  return `<span style="display:inline-flex;align-items:center;gap:5px;background:${cfg.bg};color:${cfg.color};border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;"><span style="width:6px;height:6px;border-radius:50%;background:${cfg.dot};"></span>${s}</span>`;
+};
+const FLAG = {"AU":"🇦🇺","BR":"🇧🇷","ES":"🇪🇸","KR":"🇰🇷"};
+
+function channelBudgetHTML() {
+  const { selectedCountryId, selectedChannelId, expandedInvoiceId, showAddInvoice, showAddChannel, showAddCountry, newInv, newChannel } = S.cbm;
+  const cty = S.countryBudgets.find(c=>c.id===selectedCountryId);
+  const ch  = selectedChannelId && cty ? cty.channels.find(c=>c.id===selectedChannelId) : null;
+  const allocTotal = Object.values(newInv.allocations).reduce((s,v)=>s+Number(v||0),0);
+  const invAmount  = Number(newInv.amount||0);
+  const allocDiff  = invAmount - allocTotal;
+
+  // Country tabs
+  const countryTabsHtml = S.countryBudgets.map(c => {
+    const pendingCt = S.invoices.filter(i=>i.countryId===c.id&&i.status==="Pending").length;
+    const sel = selectedCountryId===c.id && !showAddCountry;
+    return `<button onclick="selectCountry('${c.id}')"
+      style="padding:10px 16px;border-radius:12px;border:2px solid ${sel?"#3b82f6":"#e2e8f0"};
+             background:${sel?"#eff6ff":"#fff"};color:${sel?"#2563eb":"#374151"};
+             font-size:13px;font-weight:${sel?700:500};cursor:pointer;font-family:'Outfit',sans-serif;
+             display:flex;align-items:center;gap:8px;transition:all .15s;">
+      <span style="font-size:18px;">${FLAG[c.country]||"🌍"}</span>
+      ${c.country}
+      <span style="font-size:10px;color:${sel?"#93c5fd":"#94a3b8"};background:${sel?"rgba(255,255,255,.6)":"#f1f5f9"};padding:1px 6px;border-radius:5px;">${c.currency}</span>
+      ${pendingCt?`<span style="background:#ef4444;color:#fff;border-radius:20px;padding:1px 6px;font-size:10px;font-weight:700;">${pendingCt}</span>`:""}
+    </button>`;
+  }).join("") + `
+  <button onclick="toggleAddCountry()"
+    style="padding:10px 14px;border-radius:12px;border:2px dashed ${showAddCountry?"#3b82f6":"#cbd5e1"};
+           background:${showAddCountry?"#eff6ff":"transparent"};color:${showAddCountry?"#2563eb":"#94a3b8"};
+           font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;">
+    ${showAddCountry?"✕ Cancel":"＋ Add Country"}
+  </button>`;
+
+  if (!cty) return `<div style="padding:40px;text-align:center;color:#94a3b8;">Select a country to begin.</div>`;
+
+  const allCtyInvoices = S.invoices.filter(i=>i.countryId===selectedCountryId);
+  const ctyInvoiced    = allCtyInvoices.reduce((s,i)=>s+i.amount,0);
+  const ctyPaid        = allCtyInvoices.filter(i=>i.status==="Paid").reduce((s,i)=>s+i.amount,0);
+  const ctyPending     = allCtyInvoices.filter(i=>i.status==="Pending").length;
+  const ctyChBudget    = cty.channels.reduce((s,c)=>s+c.monthlyBudget,0);
+
+  const chInvoices = ch ? S.invoices.filter(i=>i.channelId===ch.id) : [];
+  const chInvoiced = chInvoices.reduce((s,i)=>s+i.amount,0);
+  const chPaid     = chInvoices.filter(i=>i.status==="Paid").reduce((s,i)=>s+i.amount,0);
+  const chPending  = chInvoices.filter(i=>i.status==="Pending").length;
+
+  function summaryCards(items) {
+    return `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+      ${items.map(c=>`<div style="background:${c.bg};border-radius:14px;padding:16px 18px;">
+        <div style="font-size:11px;font-weight:700;color:${c.color};letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">${c.label}</div>
+        <div style="font-size:20px;font-weight:800;color:#0f172a;">${c.value}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:3px;">${c.sub}</div>
+      </div>`).join("")}
+    </div>`;
+  }
+
+  // ── Country overview ──
+  function countryOverview() {
+    const channelCards = cty.channels.map(ch => {
+      const invs   = S.invoices.filter(i=>i.channelId===ch.id);
+      const invAmt = invs.reduce((s,i)=>s+i.amount,0);
+      const paidAmt= invs.filter(i=>i.status==="Paid").reduce((s,i)=>s+i.amount,0);
+      const pendCt = invs.filter(i=>i.status==="Pending").length;
+      const pct    = Math.min(100,Math.round(invAmt/ch.monthlyBudget*100));
+      return `<div onclick="selectChannel('${ch.id}')" style="background:#fff;border-radius:14px;border:2px solid #e8ecf0;padding:18px;cursor:pointer;transition:all .15s;"
+        onmouseover="this.style.borderColor='#3b82f6';this.style.boxShadow='0 4px 16px rgba(37,99,235,.1)'"
+        onmouseout="this.style.borderColor='#e8ecf0';this.style.boxShadow='none'">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#0f172a;">${ch.name}</div>
+            <div style="margin-top:4px;">${CH_TYPE_BADGE(ch.type)}</div>
+          </div>
+          ${pendCt?`<span style="background:#ef4444;color:#fff;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700;">${pendCt} pending</span>`:""}
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:#64748b;margin-bottom:4px;">
+            <span>Invoiced vs Budget</span><span style="font-weight:600;color:#0f172a;">${pct}%</span>
+          </div>
+          <div style="background:#e2e8f0;border-radius:100px;height:6px;overflow:hidden;">
+            <div style="width:${pct}%;height:100%;background:${pct>90?"#ef4444":"#3b82f6"};border-radius:100px;"></div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span style="color:#64748b;">Monthly Budget</span><span style="font-weight:700;color:#0f172a;">${fmtCurrency(ch.monthlyBudget,ch.currency)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-top:3px;"><span style="color:#64748b;">Invoiced</span><span style="font-weight:600;color:#7c3aed;">${fmtCurrency(invAmt,ch.currency)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:3px;"><span style="color:#64748b;">Paid</span><span style="font-weight:600;color:#166534;">${fmtCurrency(paidAmt,ch.currency)}</span></div>
+        <div style="margin-top:10px;font-size:11px;color:#94a3b8;">${ch.campaigns.length} campaign(s) · ${invs.length} invoice(s) · Click →</div>
+      </div>`;
+    }).join("");
+
+    const addCard = `<div onclick="toggleAddChannel()" style="background:transparent;border-radius:14px;border:2px dashed #cbd5e1;padding:18px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:190px;transition:all .15s;"
+      onmouseover="this.style.borderColor='#3b82f6';this.style.background='#f8fafc'"
+      onmouseout="this.style.borderColor='#cbd5e1';this.style.background='transparent'">
+      <span style="font-size:28px;">＋</span>
+      <span style="font-size:13px;font-weight:600;color:#94a3b8;">Add Channel</span>
+    </div>`;
+
+    return summaryCards([
+      {label:"Total Channel Budgets", value:fmtCurrency(ctyChBudget,cty.currency), sub:`${cty.channels.length} channels · ${cty.currency}/mo`, color:"#2563eb", bg:"#eff6ff"},
+      {label:"Total Invoiced", value:fmtCurrency(ctyInvoiced,cty.currency), sub:`${allCtyInvoices.length} invoices`, color:"#7c3aed", bg:"#f5f3ff"},
+      {label:"Total Paid", value:fmtCurrency(ctyPaid,cty.currency), sub:"confirmed", color:"#166534", bg:"#dcfce7"},
+      {label:"Pending Payment", value:ctyPending+" invoice"+(ctyPending!==1?"s":""), sub:"awaiting finance", color:"#92400e", bg:"#fef9c3"},
+    ]) + `
+    <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:12px;">Channels in ${cty.country}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;">
+      ${channelCards}${addCard}
+    </div>`;
+  }
+
+  // ── Channel drill-down ──
+  function channelDetail() {
+    const campRows = ch.campaigns.map(cid => {
+      const camp = S.campaigns.find(c=>c.id===cid);
+      if (!camp) return "";
+      const campTotal = chInvoices.reduce((s,i)=>s+i.allocations.filter(a=>a.campaignId===cid).reduce((ss,a)=>ss+a.amount,0),0);
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid #f8fafc;">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#0f172a;">${camp.name}</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">${camp.id}</div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#7c3aed;">${fmtCurrency(campTotal,ch.currency)}</div>
+      </div>`;
+    }).join("");
+
+    const invoiceRows = chInvoices.map(inv => {
+      const isOpen = expandedInvoiceId===inv.id;
+      const allocHtml = inv.allocations.map(a=>`
+        <div style="font-size:13px;color:#374151;padding:6px 0;">${a.campaignName}</div>
+        <div style="font-size:13px;font-weight:600;color:#7c3aed;text-align:right;padding:6px 0;">${fmtCurrency(a.amount,inv.currency)}</div>
+        <div style="font-size:12px;color:#94a3b8;text-align:right;padding:6px 0;">${Math.round(a.amount/inv.amount*100)}%</div>`).join("");
+      return `<div style="border-bottom:1px solid #f1f5f9;">
+        <div onclick="toggleInvoice('${inv.id}')" style="display:grid;grid-template-columns:32px 140px 110px 1fr 140px 160px 50px;align-items:center;padding:14px 20px;gap:12px;cursor:pointer;"
+          onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:13px;color:#94a3b8;text-align:center;">${isOpen?"−":"+"}</span>
+          <span style="font-size:12.5px;font-weight:600;color:#0f172a;font-family:monospace;">${inv.invoiceNo}</span>
+          <span style="font-size:12px;color:#64748b;">${inv.date}</span>
+          <span style="font-size:13px;font-weight:700;color:#0f172a;">${fmtCurrency(inv.amount,inv.currency)}</span>
+          <span>${statusBadgeCbm(inv.status)}</span>
+          <span style="font-size:12px;color:#94a3b8;">${inv.paidDate?"Paid "+inv.paidDate:""}</span>
+          ${inv.status==="Pending"
+            ?`<button onclick="event.stopPropagation();markPaid('${inv.id}')" style="padding:5px 10px;background:#22c55e;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;">Mark Paid</button>`
+            :`<span style="font-size:18px;text-align:center;">✅</span>`}
+        </div>
+        ${isOpen?`<div style="background:#f8fafc;border-top:1px solid #f1f5f9;padding:16px 24px 20px 64px;animation:fadeUp .2s ease both;">
+          <div style="font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:12px;letter-spacing:.07em;">CAMPAIGN ALLOCATION</div>
+          <div style="display:grid;grid-template-columns:1fr 140px 80px;gap:6px;">
+            <div style="font-size:11px;font-weight:700;color:#64748b;border-bottom:1px solid #e2e8f0;padding-bottom:6px;">Campaign</div>
+            <div style="font-size:11px;font-weight:700;color:#64748b;text-align:right;border-bottom:1px solid #e2e8f0;padding-bottom:6px;">Amount</div>
+            <div style="font-size:11px;font-weight:700;color:#64748b;text-align:right;border-bottom:1px solid #e2e8f0;padding-bottom:6px;">%</div>
+            ${allocHtml}
+          </div>
+          ${inv.fileName?`<div style="margin-top:12px;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1.5px solid #e2e8f0;border-radius:9px;padding:8px 14px;cursor:pointer;">
+            <span style="font-size:16px;">📎</span>
+            <span style="font-size:12.5px;font-weight:600;color:#2563eb;">${inv.fileName}</span>
+            <span style="font-size:11px;color:#94a3b8;">Download</span>
+          </div>`:""}
+        </div>`:""}
+      </div>`;
+    }).join("");
+
+    const allocInputs = ch.campaigns.map(cid => {
+      const camp = S.campaigns.find(c=>c.id===cid);
+      const cur = ch.currency==="EUR"?"€":ch.currency==="AUD"?"A$":"$";
+      return `<div style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;">
+        <div style="font-size:11px;color:#64748b;font-weight:600;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${camp?camp.name:cid}</div>
+        <div class="prefix-wrap">
+          <span class="prefix-sym" style="font-size:12px;">${cur}</span>
+          <input class="field-input prefix" type="number" placeholder="0" value="${newInv.allocations[cid]||""}"
+            oninput="setCbmAlloc('${cid}',this.value);rerender();" style="font-size:13px;font-weight:600;"/>
+        </div>
+      </div>`;
+    }).join("");
+
+    const cur = ch.currency==="EUR"?"€":ch.currency==="AUD"?"A$":"$";
+
+    return `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+      <button onclick="selectChannel(null)" style="padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#374151;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;">← Back to ${cty.country}</button>
+      <span style="color:#94a3b8;">·</span>
+      <span style="font-size:13px;font-weight:700;color:#0f172a;">${ch.name}</span>
+      ${CH_TYPE_BADGE(ch.type)}
+    </div>
+    ${summaryCards([
+      {label:"Monthly Budget", value:fmtCurrency(ch.monthlyBudget,ch.currency), sub:`${ch.currency}/month`, color:"#2563eb", bg:"#eff6ff"},
+      {label:"Total Invoiced", value:fmtCurrency(chInvoiced,ch.currency), sub:`${chInvoices.length} invoices`, color:"#7c3aed", bg:"#f5f3ff"},
+      {label:"Total Paid", value:fmtCurrency(chPaid,ch.currency), sub:"confirmed", color:"#166534", bg:"#dcfce7"},
+      {label:"Pending", value:chPending+" invoice"+(chPending!==1?"s":""), sub:"awaiting finance", color:"#92400e", bg:"#fef9c3"},
+    ])}
+    ${ch.campaigns.length?`<div style="background:#fff;border-radius:16px;box-shadow:0 1px 12px rgba(0,0,0,.06);margin-bottom:20px;overflow:hidden;">
+      <div style="padding:14px 20px;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:700;color:#0f172a;">Linked Campaigns</div>
+      ${campRows}
+    </div>`:""}
+    <div style="background:#fff;border-radius:16px;box-shadow:0 1px 12px rgba(0,0,0,.06);overflow:hidden;">
+      <div style="padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#0f172a;">Invoices</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px;">点击展开查看 Campaign 分摊明细</div>
+        </div>
+        <button onclick="toggleAddInvoice()" style="padding:9px 18px;background:${showAddInvoice?"#f1f5f9":"#2563eb"};color:${showAddInvoice?"#374151":"#fff"};border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">
+          ${showAddInvoice?"✕ Cancel":"+ Add Invoice"}
+        </button>
+      </div>
+      ${showAddInvoice?`<div style="background:#f8fafc;border-bottom:2px solid #e2e8f0;padding:24px;animation:fadeUp .25s ease both;">
+        <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:16px;">📄 New Invoice — ${ch.name} (${cty.country})</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:20px;">
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px;">INVOICE NO. *</label>
+            <input class="field-input" placeholder="e.g. RNK-2024-04" value="${newInv.invoiceNo}" oninput="setCbmField('invoiceNo',this.value)" style="font-size:13px;"/></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px;">DATE *</label>
+            <input class="field-input" type="date" value="${newInv.date}" oninput="setCbmField('date',this.value)" style="font-size:13px;"/></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px;">AMOUNT *</label>
+            <div class="prefix-wrap"><span class="prefix-sym">${cur}</span>
+              <input class="field-input prefix" type="number" placeholder="0" value="${newInv.amount}" oninput="setCbmField('amount',this.value);rerender();" style="font-size:13px;"/></div></div>
+          <div><label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px;">PDF FILE</label>
+            <div style="border:1.5px dashed #cbd5e1;border-radius:10px;padding:10px 12px;text-align:center;cursor:pointer;background:#fff;" onclick="document.getElementById('pdfUpload').click()">
+              <input type="file" id="pdfUpload" accept=".pdf" style="display:none" onchange="setCbmField('fileName',this.files[0]?.name||'');rerender();">
+              <div style="font-size:12px;color:${newInv.fileName?"#2563eb":"#94a3b8"};">${newInv.fileName?"📎 "+newInv.fileName:"📎 Upload PDF"}</div>
+            </div></div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:10px;display:flex;justify-content:space-between;">
+            <span>CAMPAIGN ALLOCATION</span>
+            <span style="color:${Math.abs(allocDiff)<0.01?"#166534":allocDiff>0?"#92400e":"#dc2626"};font-weight:700;">
+              ${invAmount>0?(Math.abs(allocDiff)<0.01?"✅ Balanced":(allocDiff>0?`Unallocated: ${fmtCurrency(allocDiff,ch.currency)}`:`Over: ${fmtCurrency(-allocDiff,ch.currency)}`)): "Enter amount first"}
+            </span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">${allocInputs}</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;">
+          <button onclick="toggleAddInvoice()" style="padding:10px 20px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;color:#374151;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;">Cancel</button>
+          <button onclick="submitInvoice()" ${(!newInv.invoiceNo||!newInv.date||!newInv.amount||Math.abs(allocDiff)>0.5)?"disabled":""}
+            style="padding:10px 24px;border:none;border-radius:10px;background:${(!newInv.invoiceNo||!newInv.date||!newInv.amount||Math.abs(allocDiff)>0.5)?"#e2e8f0":"#2563eb"};color:${(!newInv.invoiceNo||!newInv.date||!newInv.amount||Math.abs(allocDiff)>0.5)?"#94a3b8":"#fff"};font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">
+            Submit Invoice
+          </button>
+        </div>
+      </div>`:""}
+      ${chInvoices.length===0?`<div style="padding:32px;text-align:center;color:#94a3b8;font-size:13px;">No invoices yet. Click "+ Add Invoice" to log one.</div>`:""}
+      ${invoiceRows}
+    </div>`;
+  }
+
+  const addChannelForm = showAddChannel ? `
+  <div style="background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(37,99,235,.12);border:2px solid #bfdbfe;margin-bottom:20px;overflow:hidden;animation:fadeUp .25s ease both;">
+    <div style="padding:16px 22px;background:linear-gradient(135deg,#eff6ff,#f5f3ff);border-bottom:1px solid #bfdbfe;display:flex;align-items:center;gap:10px;">
+      <span style="font-size:20px;">📡</span>
+      <div><div style="font-size:14px;font-weight:700;color:#1e3a8a;">Add Channel to ${cty.country}</div>
+      <div style="font-size:12px;color:#64748b;margin-top:2px;">新渠道将出现在 Invoice 管理和 Launch Ads 中</div></div>
+    </div>
+    <div style="padding:22px 24px;">
+      <div style="display:grid;grid-template-columns:1fr 150px 150px 170px;gap:14px;margin-bottom:20px;">
+        <div><label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:6px;">CHANNEL NAME *</label>
+          <input class="field-input" placeholder="e.g. TikTok Ads, Taboola..." value="${newChannel.name}" oninput="setNewChannel('name',this.value)" style="font-size:14px;"/></div>
+        <div><label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:6px;">TYPE</label>
+          <select class="field-input" onchange="setNewChannel('type',this.value)" style="font-size:13px;">
+            <option value="external"${newChannel.type==="external"?" selected":""}>External Media</option>
+            <option value="programmatic"${newChannel.type==="programmatic"?" selected":""}>Programmatic</option>
+          </select></div>
+        <div><label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:6px;">CURRENCY *</label>
+          <select class="field-input" onchange="setNewChannel('currency',this.value)" style="font-size:13px;">
+            ${["USD","EUR","AUD","GBP","BRL","MXN"].map(c=>`<option value="${c}"${newChannel.currency===c?" selected":""}>${c}</option>`).join("")}
+          </select></div>
+        <div><label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:6px;">MONTHLY BUDGET *</label>
+          <div class="prefix-wrap"><span class="prefix-sym">${newChannel.currency==="EUR"?"€":newChannel.currency==="AUD"?"A$":"$"}</span>
+            <input class="field-input prefix" type="number" placeholder="0" value="${newChannel.monthlyBudget}" oninput="setNewChannel('monthlyBudget',this.value)" style="font-size:13px;font-weight:600;"/></div></div>
+      </div>
+      <div style="margin-bottom:20px;"><label style="font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:8px;">LINK TO CAMPAIGNS</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          ${S.campaigns.map(c=>{
+            const linked=newChannel.campaigns.includes(c.id);
+            return `<button onclick="toggleNewChannelCampaign('${c.id}')"
+              style="padding:7px 12px;border-radius:9px;border:2px solid ${linked?"#3b82f6":"#e2e8f0"};background:${linked?"#eff6ff":"#fafafa"};color:${linked?"#2563eb":"#64748b"};font-size:12px;font-weight:${linked?700:500};cursor:pointer;font-family:'Outfit',sans-serif;">
+              ${linked?"✓ ":""}${c.name}
+            </button>`;
+          }).join("")}
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button onclick="toggleAddChannel()" style="padding:10px 20px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;color:#374151;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;">Cancel</button>
+        <button onclick="submitNewChannel()" ${(!newChannel.name||!newChannel.monthlyBudget)?"disabled":""}
+          style="padding:10px 24px;border:none;border-radius:10px;background:${(!newChannel.name||!newChannel.monthlyBudget)?"#e2e8f0":"linear-gradient(135deg,#2563eb,#4f46e5)"};color:${(!newChannel.name||!newChannel.monthlyBudget)?"#94a3b8":"#fff"};font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">
+          ＋ Add Channel
+        </button>
+      </div>
+    </div>
+  </div>` : "";
+
+  return `
+  <div style="animation:fadeUp .4s ease both;">
+    <div style="margin-bottom:20px;">
+      <h1 style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-.5px;">Channel Budget Management</h1>
+      <p style="font-size:13px;color:#64748b;margin-top:3px;">按国家查看渠道预算、Invoice 记录与付款状态。Country → Channel → Invoice</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:20px;">${countryTabsHtml}</div>
+    ${addChannelForm}
+    ${ch ? channelDetail() : countryOverview()}
+  </div>`;
+}
+
+// ─── Payment Calendar ─────────────────────────────────────────────────────────
+function paymentCalendarHTML() {
+  const { year, month, selectedDate, view } = S.cal;
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const dayNames   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+  // payments for this month
+  const monthStr = `${year}-${String(month+1).padStart(2,"0")}`;
+  const monthPayments = S.influencerPayments.filter(p => p.dueDate.startsWith(monthStr));
+  const totalPending  = monthPayments.filter(p=>p.status==="Pending").reduce((s,p)=>s+p.amount,0);
+  const totalPaid     = monthPayments.filter(p=>p.status==="Completed").reduce((s,p)=>s+p.amount,0);
+  const pendingCount  = monthPayments.filter(p=>p.status==="Pending").length;
+  const upcomingCount = monthPayments.filter(p => {
+    if (p.status!=="Pending") return false;
+    const diff = (new Date(p.dueDate) - new Date()) / 86400000;
+    return diff >= 0 && diff <= 3;
+  }).length;
+
+  // group by date
+  const byDate = {};
+  monthPayments.forEach(p => {
+    const d = p.dueDate;
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(p);
+  });
+
+  // selected date payments
+  const selDateStr = selectedDate ? `${year}-${String(month+1).padStart(2,"0")}-${String(selectedDate).padStart(2,"0")}` : null;
+  const selPayments = selDateStr ? (byDate[selDateStr]||[]) : [];
+
+  // calendar grid
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = new Date();
+  const isCurrentMonth = today.getFullYear()===year && today.getMonth()===month;
+
+  function amtLabel(pmts) {
+    const total = pmts.reduce((s,p)=>s+p.amount,0);
+    const cur   = pmts[0]?.currency||"USD";
+    const sym   = cur==="EUR"?"€":"$";
+    return `${sym}${total>=1000?(total/1000).toFixed(1)+"k":total}`;
+  }
+
+  const calCells = [];
+  for (let i=0; i<firstDay; i++) calCells.push(null);
+  for (let d=1; d<=daysInMonth; d++) calCells.push(d);
+
+  const calRows = [];
+  for (let i=0; i<calCells.length; i+=7) calRows.push(calCells.slice(i,i+7));
+
+  const calGrid = calRows.map(row => `
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">
+      ${row.map(d => {
+        if (!d) return `<div style="min-height:80px;"></div>`;
+        const dStr = `${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        const pmts = byDate[dStr]||[];
+        const hasPending   = pmts.some(p=>p.status==="Pending");
+        const hasCompleted = pmts.some(p=>p.status==="Completed");
+        const isToday      = isCurrentMonth && today.getDate()===d;
+        const isSel        = selectedDate===d;
+        const isUpcoming   = hasPending && (() => { const diff=(new Date(dStr)-new Date())/86400000; return diff>=0&&diff<=3; })();
+        return `
+        <div onclick="selectCalDate(${d})"
+          style="min-height:80px;border-radius:12px;padding:8px;cursor:${pmts.length?"pointer":"default"};
+                 background:${isSel?"#eff6ff":isUpcoming?"#fffbeb":"#fff"};
+                 border:2px solid ${isSel?"#3b82f6":isUpcoming?"#fcd34d":hasPending?"#dbeafe":hasCompleted?"#dcfce7":"#f1f5f9"};
+                 transition:all .15s;"
+          onmouseover="if(${pmts.length>0})this.style.borderColor='#3b82f6'"
+          onmouseout="this.style.borderColor='${isSel?"#3b82f6":isUpcoming?"#fcd34d":hasPending?"#dbeafe":hasCompleted?"#dcfce7":"#f1f5f9"}'">
+          <div style="font-size:12px;font-weight:${isToday?800:500};color:${isToday?"#fff":"#374151"};
+                      ${isToday?"background:#2563eb;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;":""}
+                      margin-bottom:4px;">${d}</div>
+          ${pmts.length?`
+            ${hasPending?`<div style="background:#dbeafe;color:#1d4ed8;border-radius:6px;padding:2px 5px;font-size:10px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              💸 ${amtLabel(pmts.filter(p=>p.status==="Pending"))}
+            </div>`:""}
+            ${hasCompleted?`<div style="background:#dcfce7;color:#166534;border-radius:6px;padding:2px 5px;font-size:10px;font-weight:700;margin-bottom:2px;">
+              ✓ ${amtLabel(pmts.filter(p=>p.status==="Completed"))}
+            </div>`:""}
+            <div style="font-size:10px;color:#94a3b8;">${pmts.length} payment${pmts.length>1?"s":""}</div>
+          `:""}
+        </div>`;
+      }).join("")}
+    </div>`).join("");
+
+  // list view rows
+  const sortedPayments = [...monthPayments].sort((a,b)=>a.dueDate.localeCompare(b.dueDate));
+
+  const listRows = sortedPayments.map(p => {
+    const sym = p.currency==="EUR"?"€":"$";
+    return `
+    <div style="display:grid;grid-template-columns:100px 1fr 140px 160px 100px;align-items:center;padding:13px 20px;gap:12px;border-bottom:1px solid #f1f5f9;transition:background .1s;"
+      onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#0f172a;">${p.dueDate.slice(5)}</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#0f172a;">${p.influencerName}</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:1px;">${p.influencerId} · ${p.region}</div>
+      </div>
+      <div><span style="background:${p.type==="Monthly Fee"?"#eff6ff":"#f5f3ff"};color:${p.type==="Monthly Fee"?"#2563eb":"#7c3aed"};border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;">${p.type}</span></div>
+      <div style="font-size:15px;font-weight:800;color:#0f172a;">${sym}${p.amount.toLocaleString()} <span style="font-size:11px;font-weight:500;color:#94a3b8;">${p.currency}</span></div>
+      <div>
+        ${p.status==="Completed"
+          ?`<span style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;">✓ Paid</span>`
+          :`<span style="display:inline-flex;align-items:center;gap:4px;background:#fef9c3;color:#854d0e;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;">Pending</span>`}
+      </div>
+    </div>`;
+  }).join("");
+
+  // selected date side panel
+  const sidePanelHtml = selDateStr ? `
+  <div style="width:300px;flex-shrink:0;background:#fff;border-radius:16px;box-shadow:0 1px 16px rgba(0,0,0,.08);overflow:hidden;">
+    <div style="padding:16px 18px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#0f172a;">${monthNames[month]} ${selectedDate}</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:2px;">${selPayments.length} payment${selPayments.length!==1?"s":""}</div>
+      </div>
+      <span onclick="selectCalDate(null)" style="cursor:pointer;color:#94a3b8;font-size:16px;padding:2px 6px;border-radius:6px;"
+        onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">✕</span>
+    </div>
+    ${selPayments.length===0
+      ?`<div style="padding:32px;text-align:center;color:#94a3b8;font-size:13px;">No payments on this date.</div>`
+      :selPayments.map(p=>{
+        const sym = p.currency==="EUR"?"€":"$";
+        return `<div style="padding:16px 18px;border-bottom:1px solid #f1f5f9;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="font-size:13px;font-weight:700;color:#0f172a;flex:1;padding-right:8px;">${p.influencerName}</div>
+            <div style="font-size:16px;font-weight:800;color:#0f172a;white-space:nowrap;">${sym}${p.amount.toLocaleString()}</div>
+          </div>
+          <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;">${p.influencerId} · ${p.region}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span style="background:${p.type==="Monthly Fee"?"#eff6ff":"#f5f3ff"};color:${p.type==="Monthly Fee"?"#2563eb":"#7c3aed"};border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;">${p.type}</span>
+            <span style="background:#f1f5f9;color:#475569;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:600;">${p.currency}</span>
+            ${p.status==="Completed"?`<span style="background:#dcfce7;color:#166534;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;">✓ Paid</span>`:""}
+          </div>
+        </div>`;
+      }).join("")}
+  </div>` : "";
+
+  return `
+  <div style="animation:fadeUp .4s ease both;">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <h1 style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-.5px;">Payment Calendar</h1>
+        <p style="font-size:13px;color:#64748b;margin-top:3px;">View influencer payment schedule. Click a date to see details.</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <!-- View toggle -->
+        <div style="display:flex;border:1.5px solid #e2e8f0;border-radius:9px;overflow:hidden;">
+          <button onclick="setCalView('month')" style="padding:7px 14px;border:none;background:${view==="month"?"#2563eb":"#fff"};color:${view==="month"?"#fff":"#64748b"};cursor:pointer;font-size:12px;font-weight:600;font-family:'Outfit',sans-serif;">📅 Month</button>
+          <button onclick="setCalView('list')"  style="padding:7px 14px;border:none;background:${view==="list"?"#2563eb":"#fff"};color:${view==="list"?"#fff":"#64748b"};cursor:pointer;font-size:12px;font-weight:600;font-family:'Outfit',sans-serif;">☰ List</button>
+        </div>
+        <!-- Month nav -->
+        <div style="display:flex;align-items:center;gap:4px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:4px 8px;">
+          <button onclick="navCalMonth(-1)" style="border:none;background:transparent;cursor:pointer;font-size:16px;color:#374151;padding:2px 6px;border-radius:6px;"
+            onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">‹</button>
+          <span style="font-size:13px;font-weight:700;color:#0f172a;min-width:130px;text-align:center;">${monthNames[month]} ${year}</span>
+          <button onclick="navCalMonth(1)"  style="border:none;background:transparent;cursor:pointer;font-size:16px;color:#374151;padding:2px 6px;border-radius:6px;"
+            onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary strip -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+      ${[
+        {label:"Total Due This Month", value:"$"+totalPending.toLocaleString(), sub:`${pendingCount} payments pending`, color:"#1d4ed8", bg:"#eff6ff"},
+        {label:"Total Paid This Month", value:"$"+totalPaid.toLocaleString(), sub:`${monthPayments.filter(p=>p.status==="Completed").length} payments done`, color:"#166534", bg:"#dcfce7"},
+        {label:"Due Soon", value:upcomingCount+" payment"+(upcomingCount!==1?"s":""), sub:"due within 3 days", color:"#92400e", bg:"#fef9c3"},
+        {label:"Total Influencers", value:[...new Set(monthPayments.map(p=>p.influencerId))].length+" people", sub:"across "+[...new Set(monthPayments.map(p=>p.region))].length+" regions", color:"#6d28d9", bg:"#f5f3ff"},
+      ].map(c=>`<div style="background:${c.bg};border-radius:12px;padding:14px 16px;">
+        <div style="font-size:10px;font-weight:700;color:${c.color};letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;">${c.label}</div>
+        <div style="font-size:18px;font-weight:800;color:#0f172a;">${c.value}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">${c.sub}</div>
+      </div>`).join("")}
+    </div>
+
+    ${view==="month" ? `
+    <!-- Month view -->
+    <div style="display:flex;gap:16px;">
+      <div style="flex:1;min-width:0;">
+        <div style="background:#fff;border-radius:16px;box-shadow:0 1px 12px rgba(0,0,0,.06);overflow:hidden;">
+          <!-- Day headers -->
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:12px 12px 8px;background:#f8fafc;border-bottom:1px solid #f1f5f9;">
+            ${dayNames.map(d=>`<div style="text-align:center;font-size:11px;font-weight:700;color:#94a3b8;">${d}</div>`).join("")}
+          </div>
+          <div style="padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;">
+            ${calGrid}
+          </div>
+          <!-- Legend -->
+          <div style="padding:10px 16px;border-top:1px solid #f1f5f9;display:flex;gap:16px;flex-wrap:wrap;">
+            ${[
+              {color:"#dbeafe",text:"Pending payment"},
+              {color:"#dcfce7",text:"Paid"},
+              {color:"#fcd34d",text:"Due soon (≤3 days)"},
+            ].map(l=>`<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b;">
+              <div style="width:10px;height:10px;border-radius:3px;background:${l.color};"></div>${l.text}
+            </div>`).join("")}
+          </div>
+        </div>
+      </div>
+      ${sidePanelHtml}
+    </div>
+    ` : `
+    <!-- List view -->
+    <div style="background:#fff;border-radius:16px;box-shadow:0 1px 12px rgba(0,0,0,.06);overflow:hidden;">
+      <div style="display:grid;grid-template-columns:100px 1fr 140px 160px 100px;padding:10px 20px;gap:12px;background:#f8fafc;border-bottom:1px solid #f1f5f9;">
+        ${["Due Date","Influencer","Type","Amount","Status"].map(h=>`<div style="font-size:11px;font-weight:700;color:#64748b;">${h}</div>`).join("")}
+      </div>
+      ${sortedPayments.length===0?`<div style="padding:40px;text-align:center;color:#94a3b8;font-size:13px;">No payments this month.</div>`:listRows}
+    </div>
+    `}
+
+  </div>`;
+}
+
+// ─── Main render ──────────────────────────────────────────────────────────────
+function rerender() {
+  renderNav();
+  const el = document.getElementById("content");
+
+  // ── Ads Performance page ──
+  if (S.activeNav === "Payment Calendar") {
+    document.getElementById("breadcrumb").textContent = "📅 Payment Calendar";
+    el.innerHTML = paymentCalendarHTML();
+    return;
+  }
+  if (S.activeNav === "Asset Library") {
+    document.getElementById("breadcrumb").textContent = "🎨 Asset Library";
+    el.innerHTML = damLibraryHTML();
+    return;
+  }
+  if (S.activeNav === "Upload Asset") {
+    document.getElementById("breadcrumb").textContent = "🎨 Upload Asset";
+    el.innerHTML = damUploadHTML();
+    return;
+  }
+  if (S.activeNav === "Ads Performance") {
+    document.getElementById("breadcrumb").textContent = "📈 Ads Performance";
+    el.innerHTML = adsPerformanceHTML();
+    return;
+  }
+  if (S.activeNav === "Channel Budget Management") {
+    document.getElementById("breadcrumb").textContent = "💰 Channel Budget Management";
+    el.innerHTML = channelBudgetHTML();
+    return;
+  }
+  document.getElementById("breadcrumb").textContent = "🚀 Launch Ads";
+  const header = `
+    <div style="margin-bottom:24px;animation:fadeUp .4s ease both;">
+      <h1 style="font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-.5px;">Launch Ads</h1>
+      <p style="font-size:13px;color:#64748b;margin-top:3px;">选择 Campaign，设置广告预算（从 Campaign 总预算扣除），一键投放。</p>
+    </div>`;
+
+  if (S.launched && S.launchSnapshot) {
+    el.innerHTML = header + successHTML();
+    return;
+  }
+
+  const nc = canNext();
+  el.innerHTML = `
+    ${header.replace("</div>", `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:-16px;margin-bottom:8px;">
+        <div></div>
+        <div style="display:flex;align-items:center;gap:4px;">${stepperHTML()}</div>
+      </div>
+    </div>`)}
+    <div class="grid2${S.step===4?" full":""}">
+      <div class="card">
+        ${stepContentHTML()}
+        ${S.step<4?`
+        <div style="display:flex;justify-content:space-between;margin-top:24px;padding-top:20px;border-top:1px solid #f1f5f9;">
+          <button class="btn-back" onclick="goBack()" ${S.step===0?"disabled":""}>← 返回</button>
+          <button class="btn-next" onclick="goNext()" ${nc?"":"disabled"}
+            style="background:${nc?"#2563eb":"#e2e8f0"};color:${nc?"#fff":"#94a3b8"};box-shadow:${nc?"0 2px 12px rgba(37,99,235,.25)":"none"};">
+            ${S.step===3?"确认 →":"下一步 →"}
+          </button>
+        </div>`:""}
+      </div>
+      ${S.step<4?`<div>${rightPanelHTML()}</div>`:""}
+    </div>`;
+}
+
+// ─── Actions ──────────────────────────────────────────────────────────────────
+function selectCampaign(id)   { S.form.campaign = S.campaigns.find(c=>c.id===id); rerender(); }
+function selectPlatform(id)   { S.form.platform = id; rerender(); }
+function setField(key, val)   { S.form[key] = val; }
+function goStep(i)            { S.step = i; rerender(); }
+function goNext() {
+  if (!canNext() || S.step>=4) return;
+  let nextStep = S.step + 1;
+  // Skip budget step (2) for external platforms
+  if (S.step===1 && isExtPlatform()) nextStep = 3;
+  S.step = nextStep;
+  rerender();
+}
+function goBack() {
+  if (S.step<=0) return;
+  let prevStep = S.step - 1;
+  // Skip budget step (2) going back for external platforms
+  if (S.step===3 && isExtPlatform()) prevStep = 1;
+  S.step = prevStep;
+  rerender();
+}
+
+function doReset() {
+  S.step=0; S.launched=false; S.launchSnapshot=null;
+  S.form={campaign:null,platform:null,dailyBudget:"",totalBudget:"",startDate:"",endDate:"",objective:"",audience:"",adName:"",utm:""};
+  rerender();
+}
+
+function doLaunch() {
+  const lc = liveC();
+  const et = estTotal();
+  const snap = { campaignId:lc.id, campaignName:lc.name, spend:et };
+  S.launchSnapshot = snap;
+  // Deduct from adSpent
+  S.campaigns = S.campaigns.map(c => c.id===lc.id ? {...c, adSpent:c.adSpent+et} : c);
+  // Spinner
+  const btn = document.getElementById("launchBtn");
+  if (btn) { btn.disabled=true; btn.style.background="#94a3b8"; btn.style.boxShadow="none"; btn.innerHTML=`<div class="spin-el"></div> 提交中...`; }
+  setTimeout(()=>{ S.launched=true; rerender(); }, 2000);
+}
+
+function togglePerf(id)       { S.perf.expandedId = S.perf.expandedId===id ? null : id; rerender(); }
+function setRankBy(key)       { S.perf.rankBy = key; rerender(); }
+function setPeriod(p)         { S.perf.period = p; rerender(); }
+function setPerfFilter(k, v)  { S.perf[k] = v; rerender(); }
+function clearAllFilters()    { S.perf.filterChannel="All"; S.perf.filterCampaign="All"; S.perf.filterCountry="All"; rerender(); }
+
+function selectCountry(id)        { S.cbm.selectedCountryId=id; S.cbm.selectedChannelId=null; S.cbm.showAddInvoice=false; S.cbm.showAddChannel=false; S.cbm.showAddCountry=false; rerender(); }
+function selectChannel(id)        { S.cbm.selectedChannelId=id; S.cbm.showAddInvoice=false; S.cbm.expandedInvoiceId=null; rerender(); }
+function toggleInvoice(id)        { S.cbm.expandedInvoiceId = S.cbm.expandedInvoiceId===id?null:id; rerender(); }
+function toggleAddInvoice()       {
+  S.cbm.showAddInvoice=!S.cbm.showAddInvoice;
+  const cty = S.countryBudgets.find(c=>c.id===S.cbm.selectedCountryId);
+  const ch  = cty?.channels.find(c=>c.id===S.cbm.selectedChannelId);
+  S.cbm.newInv={invoiceNo:"",date:"",amount:"",currency:ch?.currency||"USD",fileName:"",allocations:{}};
+  rerender();
+}
+function setCbmField(k,v)         { S.cbm.newInv[k]=v; }
+function setCbmAlloc(cid,v)       { S.cbm.newInv.allocations[cid]=v; }
+function markPaid(id)             {
+  const today = new Date().toISOString().split("T")[0];
+  S.invoices = S.invoices.map(i=>i.id===id?{...i,status:"Paid",paidDate:today}:i);
+  rerender();
+}
+function submitInvoice() {
+  const cty = S.countryBudgets.find(c=>c.id===S.cbm.selectedCountryId);
+  const ch  = cty?.channels.find(c=>c.id===S.cbm.selectedChannelId);
+  const n   = S.cbm.newInv;
+  const allocs = (ch?.campaigns||[]).map(cid=>({
+    campaignId:cid,
+    campaignName:S.campaigns.find(c=>c.id===cid)?.name||cid,
+    amount:Number(n.allocations[cid]||0)
+  })).filter(a=>a.amount>0);
+  const newInvoice = {
+    id:"inv"+Date.now(), channelId:ch.id, countryId:cty.id,
+    invoiceNo:n.invoiceNo, date:n.date,
+    amount:Number(n.amount), currency:ch.currency,
+    status:"Pending", paidDate:null,
+    fileName:n.fileName||"", allocations:allocs
+  };
+  S.invoices = [newInvoice, ...S.invoices];
+  S.cbm.showAddInvoice=false;
+  S.cbm.expandedInvoiceId=newInvoice.id;
+  rerender();
+}
+function toggleAddChannel() {
+  S.cbm.showAddChannel = !S.cbm.showAddChannel;
+  S.cbm.newChannel = { name:"", currency:"USD", monthlyBudget:"", type:"external", campaigns:[] };
+  rerender();
+}
+function toggleAddCountry() {
+  S.cbm.showAddCountry = !S.cbm.showAddCountry;
+  S.cbm.newCountry = { country:"", currency:"USD", totalMonthlyBudget:"" };
+  rerender();
+}
+function setNewChannel(k, v)          { S.cbm.newChannel[k]=v; rerender(); }
+function toggleNewChannelCampaign(id) {
+  const c = S.cbm.newChannel.campaigns;
+  S.cbm.newChannel.campaigns = c.includes(id) ? c.filter(x=>x!==id) : [...c,id];
+  rerender();
+}
+function submitNewChannel() {
+  const n = S.cbm.newChannel;
+  const newCh = { id:"ch"+Date.now(), name:n.name, currency:n.currency, monthlyBudget:Number(n.monthlyBudget), type:n.type, campaigns:[...n.campaigns] };
+  S.countryBudgets = S.countryBudgets.map(cty =>
+    cty.id===S.cbm.selectedCountryId ? {...cty, channels:[...cty.channels, newCh]} : cty
+  );
+  S.cbm.selectedChannelId = newCh.id;
+  S.cbm.showAddChannel = false;
+  S.cbm.newChannel = { name:"", currency:"USD", monthlyBudget:"", type:"external", campaigns:[] };
+  rerender();
+}
+
+function openTlModal(assetId) {
+  const a = S.assets.find(x=>x.id===assetId);
+  S.dam.tlModal = {
+    show: true,
+    landingUrl: "",
+    source: a ? a.channels[0]?.toLowerCase().replace(/\s+/g,"-") : "",
+    country: a ? (a.countries[0]||"") : "",
+    term: "",
+    generatedUrl: "",
+  };
+  rerender();
+}
+function closeTlModal()        { S.dam.tlModal = { show:false, landingUrl:"", source:"", country:"", term:"", generatedUrl:"" }; rerender(); }
+function setTlField(k,v)       { S.dam.tlModal[k] = v; }
+function copyTlUrl(url) {
+  navigator.clipboard?.writeText(url).catch(()=>{});
+  S.dam.tlModal.generatedUrl = url;
+  rerender();
+}
+
+// Calendar actions
+function navCalMonth(dir) {
+  let m = S.cal.month + dir;
+  let y = S.cal.year;
+  if (m > 11) { m = 0; y++; }
+  if (m < 0)  { m = 11; y--; }
+  S.cal.month = m; S.cal.year = y; S.cal.selectedDate = null;
+  rerender();
+}
+function selectCalDate(d)    { S.cal.selectedDate = d===S.cal.selectedDate?null:d; rerender(); }
+function setCalView(v)       { S.cal.view = v; rerender(); }
+function markPaymentPaid(id) {
+  const today = new Date().toISOString().split("T")[0];
+  S.influencerPayments = S.influencerPayments.map(p=>p.id===id?{...p,status:"Completed",paidDate:today}:p);
+  rerender();
+}
+
+// DAM actions
+function setDamView(v)            { S.dam.view=v; rerender(); }
+function setDamFilter(k,v)        { S.dam.filters[k]=v; rerender(); }
+function setDamSearch(v)          { S.dam.searchQ=v; rerender(); }
+function setDamSort(v)            { S.dam.sort=v; rerender(); }
+function toggleDamActive()        { S.dam.filters.activeOnly=!S.dam.filters.activeOnly; rerender(); }
+function selectAsset(id)          { S.dam.selectedAssetId=id; rerender(); }
+function toggleFav(id)            { S.assets=S.assets.map(a=>a.id===id?{...a,favorites:!a.favorites}:a); rerender(); }
+function toggleAssetActive(id)    { S.assets=S.assets.map(a=>a.id===id?{...a,isActive:!a.isActive}:a); rerender(); }
+function approveAsset(id)         { S.assets=S.assets.map(a=>a.id===id?{...a,complianceStatus:"Approved",approvedBy:"Current User",approvalDate:new Date().toISOString().split("T")[0]}:a); rerender(); }
+function rejectAsset(id)          { S.assets=S.assets.map(a=>a.id===id?{...a,complianceStatus:"Rejected"}:a); rerender(); }
+function setDamNew(k,v)           { S.dam.newAsset[k]=v; rerender(); }
+function toggleDamField(field,val){ const arr=S.dam.newAsset[field]||[]; S.dam.newAsset[field]=arr.includes(val)?arr.filter(x=>x!==val):[...arr,val]; rerender(); }
+function setActiveNav(label)      { S.activeNav=label; rerender(); }
+function submitAsset() {
+  const n = S.dam.newAsset;
+  const now = new Date().toISOString().split("T")[0];
+  S.assets = [{
+    id:"AST-"+String(S.assets.length+1).padStart(3,"0"),
+    name:n.name, type:n.type, format:"TBD", size:"—", dimensions:"—",
+    uploadedBy:"Amanda", uploadDate:now, lastUpdated:now,
+    campaign:n.campaign, mktType:n.mktType, funnel:n.funnel,
+    channels:n.channels, countries:n.countries, languages:n.languages,
+    entity:n.entity, complianceStatus:"Draft", approvedBy:"", approvalDate:"",
+    licenseType:n.licenseType, expiryDate:n.expiryDate, restrictedRegions:n.restrictedRegions,
+    isActive:false, favorites:false,
+    thumbnail:`https://placehold.co/400x300/6366f1/ffffff?text=${encodeURIComponent(n.type)}`,
+    performance:null
+  }, ...S.assets];
+  S.dam.newAsset={name:"",type:"Image",campaign:"",mktType:"Promotion",funnel:"Awareness",channels:[],countries:[],languages:[],entity:[],licenseType:[],restrictedRegions:[],expiryDate:"",complianceStatus:"Draft",isActive:false};
+  S.activeNav="Asset Library";
+  rerender();
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+rerender();
+</script>
+</body>
+</html>
